@@ -69,10 +69,10 @@ def login():
     if 'user_id' in session:
         return redirect(url_for('home'))
     
-    # Le pasamos las credenciales públicas al HTML
+    # CORRECCIÓN: Usamos 'SUPABASE_KEY' que es como la tienes en tu .env
     return render_template('login.html', 
                          supabase_url=os.getenv('SUPABASE_URL'), 
-                         supabase_key=os.getenv('SUPABASE_ANON_KEY'))
+                         supabase_key=os.getenv('SUPABASE_KEY'))
 
 @app.route('/home')
 @login_required
