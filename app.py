@@ -285,5 +285,10 @@ def api_dashboard_summary():
         "solicitudes_pendientes": 0
     })
 
+@app.route('/force-logout')
+def force_logout():
+    session.clear()
+    return redirect(url_for('login'))
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

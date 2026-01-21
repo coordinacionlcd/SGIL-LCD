@@ -46,8 +46,8 @@
             <div class="top-bar">
                 <h2>{% block title %}Panel de Control{% endblock %}</h2>
                 <div class="user-info">
-                    <span class="role-badge">{{ session['role'] }}</span>
-                    <strong>{{ session['name'] }}</strong>
+                    <span class="role-badge">{{ session.get('role', 'Invitado') }}</span>
+                    <strong>{{ session.get('name', 'Usuario') }}</strong>
                     <div class="avatar" style="width: 35px; height: 35px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                         <i class="fa-solid fa-user"></i>
                     </div>
