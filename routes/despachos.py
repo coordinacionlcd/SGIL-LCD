@@ -20,6 +20,7 @@ def api_public_save():
             "cliente": data.get('cliente'),
             "nit": data.get('nit'),
             "email": data.get('email'),
+            "instrumento_contaminacion": data.get('instrumento_contaminacion'),
             "responsable_medicion": data.get('responsable_medicion'),
             "cargo": data.get('cargo'),
             "responsable_general": data.get('responsable_general'),

@@ -236,34 +236,24 @@
         <div class="instruction-box">
             <div class="instruction-title"><i class="fa-solid fa-list-check"></i> Indicaciones de Diligenciamiento:</div>
             <ol class="instruction-list">
-                <li><strong>Equipo de Medición:</strong> Las mediciones de contaminación deben realizarse con un instrumento diferente a los que se enviarán a calibrar.</li>
-                <li><strong>Registro Individual:</strong> Realice la medición por separado para cada instrumento del despacho y diligencie la información del mismo en </li>
+                <li>
+                    <strong>Equipo de Medición:</strong> Las mediciones de contaminación deben realizarse con un instrumento diferente a los que se enviarán a calibrar.
+                    
+                    <div style="margin-top: 8px; margin-bottom: 12px; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 6px; border: 1px dashed #d97706;">
+                        <label style="display:block; font-weight: 600; color: #92400e; font-size: 0.9rem; margin-bottom: 5px;">
+                            Indique el instrumento con el que hizo las mediciones:
+                        </label>
+                        <input type="text" name="instrumento_contaminacion" class="form-control" 
+                               style="width: 100%; font-size: 0.9rem; border: 1px solid #f59e0b;" 
+                               placeholder="Ej: Ludlum 14C (Serie 12345) con Sonda 44-9" 
+                               oninput="saveDraft()">
+                    </div>
+                </li>
+                <li><strong>Registro Individual:</strong> Realice la medición por separado para cada instrumento del despacho.</li>
                 <li><strong>Detectores Externos:</strong> Si el equipo requiere sonda/detector externo, registre únicamente la información de dicho detector.</li>
                 <li><strong>Límite:</strong> El límite de contaminación es establecido por el OPR de su institución.</li>
-            </ol>          
-        </div>
-
-        <div class="section-block">
-            <div class="section-header">
-                <div class="section-icon"><i class="fa-solid fa-microscope"></i></div>
-                <h3 class="section-title">Instrumento de Referencia</h3>
-            </div>
-            
-            <div class="input-grid">
-                <div class="form-group col-4">
-                    <label class="form-label">Marca</label>
-                    <input type="text" name="ref_marca" class="form-control" list="lista_marcas" required oninput="saveDraft()" placeholder="Seleccione o escriba...">
-                </div>
-                <div class="form-group col-4">
-                    <label class="form-label">Modelo</label>
-                    <input type="text" name="ref_modelo" class="form-control" list="lista_modelos" required oninput="saveDraft()" placeholder="Seleccione o escriba...">
-                </div>
-                <div class="form-group col-4">
-                    <label class="form-label">Número de Serie</label>
-                    <input type="text" name="ref_serie" class="form-control" required oninput="saveDraft()">
-                </div>
-            </div>
-        </div>
+            </ol>         
+        </div>        
 
         <div class="section-block">
             <div class="section-header">
@@ -320,8 +310,8 @@
             <a href="https://wa.me/573176388661" target="_blank" title="Clic para chatear en WhatsApp" style="text-decoration: none;">
                 <i class="fa-brands fa-whatsapp" 
                    style="font-size: 2.8rem; color: #25d366; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); transition: transform 0.2s;"
-                   onmouseover="this.style.transform='scale(1.15)'" 
-                   onmouseout="this.style.transform='scale(1)'">
+                   onmouseover="this.style.transform='scale(1.2)'" 
+                   onmouseout="this.style.transform='scale(0.8)'">
                 </i>
             </a>
         </div>
