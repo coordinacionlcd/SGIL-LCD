@@ -13,6 +13,8 @@
             --brand-purple: #52277c;
             --brand-purple-dark: #3a1b59;
             --brand-red: #e43d30;
+            --success: #10b981;
+            --error: #ef4444;
             --text-main: #2d3748;
             --text-light: #718096;
             --bg-page: #f0f2f5;
@@ -25,250 +27,122 @@
             background-color: var(--bg-page);
             background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
             background-size: 20px 20px;
-            margin: 0; 
-            padding: 40px 20px; 
+            margin: 0; padding: 40px 20px; 
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
+            display: flex; justify-content: center;
         }
 
-        /* Contenedor Principal con efecto de elevación */
         .main-container {
-            width: 100%;
-            max-width: 1000px;
-            background: white;
-            border-radius: 16px;
+            width: 100%; max-width: 1000px;
+            background: white; border-radius: 16px;
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.5);
+            overflow: hidden; border: 1px solid rgba(255,255,255,0.5);
         }
 
-        /* Encabezado */
+        /* Header */
         .hero-header {
             background: linear-gradient(135deg, var(--brand-purple) 0%, var(--brand-purple-dark) 100%);
-            color: white;
-            padding: 40px;
-            text-align: center;
-            position: relative;
+            color: white; padding: 40px; text-align: center; position: relative;
         }
-        .hero-header::after {
-            content: '';
-            position: absolute;
-            bottom: -20px; left: 0; right: 0;
-            height: 40px;
-            background: white;
-            border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+        .hero-header img { height: 60px; filter: brightness(0) invert(1); margin-bottom: 15px; }
+        .hero-title { font-family: 'Poppins', sans-serif; font-size: 1.6rem; margin: 0 0 15px 0; font-weight: 600; line-height: 1.3; }
+        .hero-subtitle { 
+            font-size: 0.9rem; 
+            opacity: 0.95; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            line-height: 1.6; 
+            font-weight: 300; 
+            text-align: justify; /* Justificado para bloques de texto largos */
+            text-align-last: center; /* Última línea centrada */
         }
+        .hero-subtitle strong { font-weight: 600; color: #ffd700; /* Dorado suave para resaltar sobre morado */ }
 
-        .logo-container img {
-            height: 60px;
-            filter: brightness(0) invert(1);
-            margin-bottom: 15px;
-        }
-
-        .hero-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            margin: 0 0 10px 0;
-            font-weight: 600;
-        }
-        
-        .hero-subtitle {
-            font-size: 0.95rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.5;
-            font-weight: 300;
-        }
-
-        /* Cuerpo del Formulario */
+        /* Formulario */
         .form-content { padding: 40px; }
-
-        .section-block { margin-bottom: 40px; }
+        .section-block { margin-bottom: 40px; position: relative; }
         
         .section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--bg-page);
+            display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+            padding-bottom: 10px; border-bottom: 2px solid var(--bg-page);
         }
         .section-icon {
-            width: 32px; height: 32px;
-            background: rgba(82, 39, 124, 0.1);
-            color: var(--brand-purple);
-            border-radius: 8px;
+            width: 32px; height: 32px; background: rgba(82, 39, 124, 0.1);
+            color: var(--brand-purple); border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
         }
-        .section-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--brand-purple);
-            margin: 0;
-        }
+        .section-title { font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--brand-purple); margin: 0; }
 
-        /* GRID SYSTEM: La clave para que se vea ordenado */
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px;
-        }
+        /* Grid System */
+        .input-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+        .col-12 { grid-column: span 12; } .col-8 { grid-column: span 8; }
+        .col-6 { grid-column: span 6; } .col-4 { grid-column: span 4; } .col-3 { grid-column: span 3; }
 
-        /* Utilidades de ancho */
-        .col-12 { grid-column: span 12; }
-        .col-8  { grid-column: span 8; }
-        .col-6  { grid-column: span 6; }
-        .col-4  { grid-column: span 4; }
-        .col-3  { grid-column: span 3; }
-
-        /* Estilos de Inputs */
+        /* Inputs con Validación */
         .form-group { position: relative; }
+        .form-label { display: block; margin-bottom: 6px; font-size: 0.85rem; font-weight: 500; color: var(--text-light); }
         
-        .form-label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-light);
-        }
-
         .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: var(--input-bg);
-            color: var(--text-main);
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            box-sizing: border-box; /* Vital para que no se salga */
+            width: 100%; padding: 12px 15px; border-radius: 8px;
+            border: 1px solid var(--border-color); background-color: var(--input-bg);
+            color: var(--text-main); font-family: inherit; font-size: 0.95rem;
+            transition: all 0.2s ease; box-sizing: border-box;
         }
 
         .form-control:focus {
-            outline: none;
-            background-color: white;
-            border-color: var(--brand-purple);
+            outline: none; background-color: white; border-color: var(--brand-purple);
             box-shadow: 0 0 0 4px rgba(82, 39, 124, 0.1);
         }
 
-        /* Sección Contador */
+        /* Estados de Validación */
+        .form-control.is-valid { border-color: var(--success); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; }
+        .form-control.is-invalid { border-color: var(--error); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ef4444'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; animation: shake 0.3s; }
+        
+        .error-msg { color: var(--error); font-size: 0.75rem; margin-top: 4px; display: none; }
+        .form-control.is-invalid + .error-msg { display: block; }
+
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }
+
+        /* Counter Box */
         .counter-box {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 400px;
+            background: #f8fafc; border: 1px solid var(--border-color);
+            padding: 20px; border-radius: 12px; display: flex; align-items: center;
+            justify-content: space-between; max-width: 400px;
         }
-        .qty-input {
-            width: 80px;
-            text-align: center;
-            font-weight: 700;
-            color: var(--brand-purple);
-            font-size: 1.2rem;
-        }
+        .qty-input { width: 80px; text-align: center; font-weight: 700; color: var(--brand-purple); font-size: 1.2rem; }
 
-        /* Tabla Estilizada */
+        /* Table */
         .table-wrapper {
-            margin-top: 25px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            display: none; /* Oculto inicialmente */
-            animation: fadeIn 0.5s ease;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-top: 25px; border-radius: 12px; border: 1px solid var(--border-color);
+            overflow: hidden; display: none; animation: fadeIn 0.5s ease;
         }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        
-        th {
-            background: #f1f5f9;
-            text-align: left;
-            padding: 15px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-light);
-            font-weight: 600;
-        }
-        
-        td {
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
-            background: white;
-        }
-
-        /* Inputs dentro de tabla (más compactos) */
-        td .form-control {
-            padding: 8px;
-            font-size: 0.9rem;
-            background: white;
-            border-color: #e2e8f0;
-        }
-
-        .info-msg {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.75rem;
-            color: #d97706; /* Ámbar */
-            background: #fef3c7;
-            padding: 4px 8px;
-            border-radius: 4px;
-            margin-top: 5px;
-        }
-
-        /* Botón Enviar */
-        .btn-submit-container {
-            margin-top: 40px;
-            text-align: right;
-            border-top: 1px solid var(--border-color);
-            padding-top: 30px;
-        }
+        th { background: #f1f5f9; text-align: left; padding: 15px; font-size: 0.8rem; text-transform: uppercase; color: var(--text-light); font-weight: 600; }
+        td { padding: 10px; border-bottom: 1px solid var(--border-color); background: white; }
+        td .form-control { padding: 8px; font-size: 0.9rem; }
 
         .btn-submit {
             background: linear-gradient(to right, var(--brand-purple), #6b3fa0);
-            color: white;
-            border: none;
-            padding: 14px 40px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(82, 39, 124, 0.3);
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            color: white; border: none; padding: 14px 40px; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(82, 39, 124, 0.3);
+            transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px;
         }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(82, 39, 124, 0.4);
-        }
-
-        .btn-icon-trash {
-            color: #ef4444;
-            background: #fee2e2;
-            width: 30px; height: 30px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.2s;
-        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(82, 39, 124, 0.4); }
+        .btn-submit-container { margin-top: 40px; text-align: right; border-top: 1px solid var(--border-color); padding-top: 30px; }
+        .btn-icon-trash { color: #ef4444; background: #fee2e2; width: 30px; height: 30px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .btn-icon-trash:hover { background: #fecaca; }
 
-        /* Responsive */
+        /* Tag de Autosave */
+        .autosave-badge {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(255,255,255,0.2); color: white;
+            padding: 5px 12px; border-radius: 20px; font-size: 0.75rem;
+            display: flex; align-items: center; gap: 5px; opacity: 0; transition: opacity 0.5s;
+        }
+        
         @media (max-width: 768px) {
             .input-grid { grid-template-columns: 1fr; gap: 15px; }
             .col-12, .col-8, .col-6, .col-4, .col-3 { grid-column: span 1; }
@@ -282,16 +156,18 @@
 
 <div class="main-container">
     <div class="hero-header">
+        <div class="autosave-badge" id="autosaveBadge"><i class="fa-solid fa-cloud-arrow-up"></i> Borrador Guardado</div>
         <div class="logo-container">
             <img src="{{ url_for('static', filename='img/Logo_LCD.png') }}" alt="Sievert LCD Logo">
         </div>
         <h1 class="hero-title">Recomendaciones y mediciones para el despacho de instrumentos</h1>
+        
         <p class="hero-subtitle">
-            Si manejas fuentes radiactivas no selladas, es posible que los instrumentos que vas a enviar a calibración puedan estar contaminados con material radiactivo, por lo cual es importante que se realicen y registren mediciones de contaminación superficial de tus instrumentos, con OTRO instrumento, previo al envío. Este formato debe ser diligenciado SIEMPRE como requisito para la programación de despacho de tus instrumentos. Si vas a enviar un instrumento que requiere detector externo, diligencia SÓLO la información del detector externo.
+            Si manejas fuentes radiactivas no selladas, es posible que los instrumentos que vas a enviar a calibración puedan estar contaminados con material radiactivo, por lo cual es importante que se realicen y registren mediciones de contaminación superficial de tus instrumentos, con OTRO instrumento, previo al envío. <strong>Este formato debe ser diligenciado SIEMPRE como requisito para la programación de despacho de tus instrumentos.</strong> Si vas a enviar un instrumento que requiere detector externo, diligencia <strong>SÓLO</strong> la información del detector externo.
         </p>
     </div>
 
-    <form id="techForm" class="form-content">
+    <form id="techForm" class="form-content" novalidate>
         
         <div class="section-block">
             <div class="section-header">
@@ -302,33 +178,39 @@
             <div class="input-grid">
                 <div class="form-group col-8">
                     <label class="form-label">Razón Social / Institución</label>
-                    <input type="text" name="cliente" class="form-control">
+                    <input type="text" name="cliente" class="form-control" required placeholder="Ej: Clínica Las Américas" oninput="saveDraft()">
+                    <div class="error-msg">Ingrese un nombre válido.</div>
                 </div>
                 <div class="form-group col-4">
                     <label class="form-label">NIT</label>
-                    <input type="text" name="nit" class="form-control" required placeholder="Sin DV">
+                    <input type="text" name="nit" class="form-control" inputmode="numeric" required placeholder="Solo números" oninput="validateNumber(this); saveDraft()">
+                    <div class="error-msg">Solo se permiten números.</div>
                 </div>
 
                 <div class="form-group col-8">
                     <label class="form-label">Dirección de Recolección</label>
-                    <input type="text" name="direccion" class="form-control" required>
+                    <input type="text" name="direccion" class="form-control" required oninput="saveDraft()">
+                    <div class="error-msg">Campo requerido.</div>
                 </div>
                 <div class="form-group col-4">
                     <label class="form-label">Ciudad</label>
-                    <input type="text" name="ciudad" class="form-control" required>
+                    <input type="text" name="ciudad" class="form-control" required oninput="validateText(this); saveDraft()">
+                    <div class="error-msg">Solo letras.</div>
                 </div>
 
                 <div class="form-group col-4">
                     <label class="form-label">Responsable de Medición</label>
-                    <input type="text" name="responsable_medicion" class="form-control" required placeholder="Quien está midiendo">
+                    <input type="text" name="responsable_medicion" class="form-control" required oninput="validateText(this); saveDraft()">
+                    <div class="error-msg">Nombre inválido.</div>
                 </div>
                 <div class="form-group col-4">
                     <label class="form-label">Cargo</label>
-                    <input type="text" name="cargo" class="form-control" required>
+                    <input type="text" name="cargo" class="form-control" required oninput="saveDraft()">
                 </div>
                 <div class="form-group col-4">
                     <label class="form-label">Teléfono / Celular</label>
-                    <input type="tel" name="telefono" class="form-control" required>
+                    <input type="tel" name="telefono" class="form-control" inputmode="tel" required placeholder="Ej: 3001234567" oninput="validatePhone(this); saveDraft()">
+                    <div class="error-msg">Número inválido.</div>
                 </div>
             </div>
         </div>
@@ -336,24 +218,21 @@
         <div class="section-block">
             <div class="section-header">
                 <div class="section-icon"><i class="fa-solid fa-microscope"></i></div>
-                <h3 class="section-title">Instrumento de Referencia (Patrón)</h3>
+                <h3 class="section-title">Instrumento de Referencia</h3>
             </div>
-            <p style="margin-top: -15px; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-light);">
-                Especifique el equipo con el que realizó las mediciones previas.
-            </p>
-
+            
             <div class="input-grid">
                 <div class="form-group col-4">
                     <label class="form-label">Marca</label>
-                    <input type="text" name="ref_marca" class="form-control">
+                    <input type="text" name="ref_marca" class="form-control" required oninput="saveDraft()">
                 </div>
                 <div class="form-group col-4">
                     <label class="form-label">Modelo</label>
-                    <input type="text" name="ref_modelo" class="form-control">
+                    <input type="text" name="ref_modelo" class="form-control" required oninput="saveDraft()">
                 </div>
                 <div class="form-group col-4">
                     <label class="form-label">Número de Serie</label>
-                    <input type="text" name="ref_serie" class="form-control" required>
+                    <input type="text" name="ref_serie" class="form-control" required oninput="saveDraft()">
                 </div>
             </div>
         </div>
@@ -367,7 +246,7 @@
             <div class="counter-box">
                 <div>
                     <strong style="display:block; color: var(--text-main);">Cantidad de Equipos</strong>
-                    <span style="font-size: 0.8rem; color: var(--text-light);">Indique cuántos equipos enviará</span>
+                    <span style="font-size: 0.8rem; color: var(--text-light);">¿Cuántos equipos nos enviará?</span>
                 </div>
                 <input type="number" id="qtyInput" class="form-control qty-input" min="0" value="0" onchange="generateRows()">
             </div>
@@ -386,8 +265,7 @@
                             <th width="4%"></th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody">
-                        </tbody>
+                    <tbody id="tableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -402,7 +280,63 @@
 </div>
 
 <script>
-    // --- LÓGICA DE TABLA ---
+    // --- 1. VALIDACIONES "TOP LEVEL" ---
+    
+    // Solo números (para NIT)
+    function validateNumber(input) {
+        input.value = input.value.replace(/[^0-9]/g, ''); 
+        validateField(input, input.value.length > 5); 
+    }
+
+    // Teléfonos (permite números, espacios y +)
+    function validatePhone(input) {
+        input.value = input.value.replace(/[^0-9+ ]/g, '');
+        validateField(input, input.value.length > 6);
+    }
+
+    // Solo Texto
+    function validateText(input) {
+        input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+        validateField(input, input.value.length > 2);
+    }
+
+    // Función auxiliar visual
+    function validateField(input, isValid) {
+        if (isValid) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        } else {
+            input.classList.remove('is-valid');
+            input.classList.add('is-invalid');
+        }
+    }
+
+    // --- 2. PERSISTENCIA DE DATOS (AUTO-SAVE) ---
+    function saveDraft() {
+        const formData = new FormData(document.getElementById('techForm'));
+        const data = {};
+        formData.forEach((value, key) => { 
+            if(!key.includes('[]')) data[key] = value; 
+        });
+        localStorage.setItem('sievert_draft', JSON.stringify(data));
+        
+        const badge = document.getElementById('autosaveBadge');
+        badge.style.opacity = '1';
+        setTimeout(() => badge.style.opacity = '0', 2000);
+    }
+
+    function loadDraft() {
+        const saved = localStorage.getItem('sievert_draft');
+        if (saved) {
+            const data = JSON.parse(saved);
+            for (const key in data) {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input) input.value = data[key];
+            }
+        }
+    }
+
+    // --- 3. LÓGICA DE TABLA ---
     function generateRows() {
         const qty = parseInt(document.getElementById('qtyInput').value) || 0;
         const container = document.getElementById('itemsContainer');
@@ -439,17 +373,20 @@
                     <option value="Bq">Bq</option>
                 </select>
             </td>
-            <td><input type="number" step="any" name="fondo[]" class="form-control" required oninput="calcNet(this)" placeholder="0"></td>
-            <td><input type="number" step="any" name="inst[]" class="form-control" required oninput="calcNet(this)" placeholder="0"></td>
+            <td><input type="number" step="any" name="fondo[]" class="form-control" required oninput="calcNet(this); validatePositive(this)" placeholder="0"></td>
+            <td><input type="number" step="any" name="inst[]" class="form-control" required oninput="calcNet(this); validatePositive(this)" placeholder="0"></td>
             <td><input type="text" name="neto[]" class="form-control" readonly style="background:#f1f5f9; font-weight:600; color:var(--brand-purple);"></td>
             <td>
                 <input type="number" step="any" name="limite[]" class="form-control" required placeholder="Límite">
-                <div class="info-msg" title="Referencia interna"><i class="fa-solid fa-info-circle"></i> Consultar al OPR</div>
             </td>
             <td style="text-align:center;">
                 <button type="button" class="btn-icon-trash" onclick="removeRowManual(this)"><i class="fa-solid fa-trash-can"></i></button>
             </td>
         `;
+    }
+
+    function validatePositive(input) {
+        if(input.value < 0) input.value = 0;
     }
 
     function removeRowManual(btn) {
@@ -469,14 +406,21 @@
         netoInput.value = Math.round((inst - fondo) * 1000) / 1000;
     }
 
+    window.onload = loadDraft;
+
     // --- ENVÍO ---
     document.getElementById('techForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Validación Cantidad
         const qty = parseInt(document.getElementById('qtyInput').value) || 0;
         if (qty === 0) {
-            Swal.fire({ icon: 'warning', title: 'Faltan equipos', text: 'Por favor indique cuántos equipos va a enviar.' });
+            Swal.fire({ icon: 'warning', title: 'Atención', text: 'Debe ingresar al menos un equipo.' });
+            return;
+        }
+
+        if (!e.target.checkValidity()) {
+            e.target.classList.add('was-validated'); 
+            Swal.fire({ icon: 'error', title: 'Campos incompletos', text: 'Por favor revise los campos marcados en rojo.' });
             return;
         }
 
@@ -489,10 +433,8 @@
         const basicData = Object.fromEntries(formData.entries());
         basicData.fecha_solicitada = new Date().toISOString();
 
-        // Limpieza de arrays del form data básico
         ['modelo[]','serie[]','unidad[]','fondo[]','inst[]','neto[]','limite[]'].forEach(k => delete basicData[k]);
 
-        // Construcción de Items
         const items = [];
         for (let row of document.getElementById('tableBody').rows) {
             items.push({
@@ -514,16 +456,20 @@
             });
 
             if (response.ok) {
-                // Mensaje ÉXITO personalizado
+                localStorage.removeItem('sievert_draft'); 
                 Swal.fire({
                     icon: 'success',
                     title: '¡Solicitud Recibida!',
-                    html: `<p style="color:#555;">La información se ha cargado correctamente.</p>
-                           <p style="margin-top:10px; font-weight:600; color:#52277c;">
-                             El equipo de Sievert LCD revisará su solicitud para proceder con la recepción.
-                           </p>`,
+                    html: `<div style="text-align:left; color:#555;">
+                             <p>Hemos registrado su información correctamente.</p>
+                             <ul style="margin-top:10px; margin-bottom:10px; font-size:0.9rem;">
+                                <li>Cliente: <strong>${basicData.cliente}</strong></li>
+                                <li>Equipos: <strong>${items.length}</strong></li>
+                             </ul>
+                             <p style="color:#52277c; font-weight:600;">El equipo de Sievert LCD procederá con la recepción.</p>
+                           </div>`,
                     confirmButtonColor: '#52277c',
-                    confirmButtonText: 'Entendido'
+                    confirmButtonText: 'Finalizar'
                 }).then(() => location.reload());
             } else {
                 throw new Error('Error en el servidor');
