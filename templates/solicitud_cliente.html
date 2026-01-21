@@ -526,83 +526,106 @@
                 localStorage.removeItem('sievert_draft'); 
                 
                 Swal.fire({
-                    width: '950px', // Ventana más ancha para evitar scroll
-                    padding: '2rem',
+                    width: '900px',
+                    padding: '2.5rem',
                     background: '#ffffff',
                     html: `
                         <style>
-                            /* Estilos internos solo para esta alerta */
-                            .success-header { margin-bottom: 20px; }
-                            .success-title { color: #52277c; font-size: 1.8rem; font-weight: 700; margin: 0; }
-                            .success-subtitle { color: #718096; font-size: 1rem; margin-top: 5px; }
+                            .success-title { color: #52277c; font-size: 2rem; font-weight: 700; margin: 0; }
+                            .success-subtitle { color: #718096; font-size: 1.1rem; margin-top: 5px; }
                             
-                            .recommendation-box { background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 20px; }
-                            .rec-title { 
-                                background: #52277c; color: white; padding: 8px 20px; border-radius: 20px; 
-                                font-weight: 600; display: inline-block; margin-bottom: 20px; font-size: 0.9rem;
-                                box-shadow: 0 4px 6px rgba(82, 39, 124, 0.2);
+                            /* Contenedor principal de recomendaciones */
+                            .rec-box { 
+                                background: #f8fafc; padding: 30px; border-radius: 16px; 
+                                border: 1px solid #e2e8f0; margin-top: 25px; 
+                            }
+                            .rec-badge { 
+                                background: #52277c; color: white; padding: 8px 25px; border-radius: 30px; 
+                                font-weight: 600; font-size: 0.9rem; letter-spacing: 1px;
+                                box-shadow: 0 4px 10px rgba(82, 39, 124, 0.2); margin-bottom: 25px; display: inline-block;
                             }
 
-                            /* Grid de pasos para que quepan sin scroll */
-                            .steps-grid { 
-                                display: grid; 
-                                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
-                                gap: 15px; 
-                                align-items: start;
+                            /* Flexbox para 3 arriba y 2 abajo */
+                            .steps-container {
+                                display: flex;
+                                flex-wrap: wrap;
+                                justify-content: center;
+                                gap: 20px; /* Espacio entre tarjetas */
                             }
 
                             .step-card { 
-                                background: white; padding: 15px 10px; border-radius: 8px; 
-                                border: 1px solid #e2e8f0; text-align: center; height: 100%;
+                                background: white; padding: 20px 15px; border-radius: 12px; 
+                                border: 1px solid #e2e8f0; text-align: center;
+                                width: 28%; /* Para que quepan 3 (aprox 30%) */
+                                min-width: 200px;
+                                box-shadow: 0 2px 5px rgba(0,0,0,0.02);
                                 transition: transform 0.2s;
                             }
-                            .step-card:hover { transform: translateY(-3px); border-color: #52277c; }
+                            .step-card:hover { transform: translateY(-5px); border-color: #52277c; }
                             
-                            .step-icon { color: #e43d30; font-size: 2rem; margin-bottom: 10px; display: block; }
-                            .step-num { font-weight: 700; color: #52277c; font-size: 0.9rem; display: block; margin-bottom: 5px; }
-                            .step-text { font-size: 0.8rem; color: #4a5568; line-height: 1.4; }
+                            /* Íconos más grandes */
+                            .step-icon { color: #e43d30; font-size: 2.5rem; margin-bottom: 15px; display: block; }
+                            .step-num { font-weight: 700; color: #52277c; font-size: 0.95rem; display: block; margin-bottom: 8px; text-transform: uppercase; }
+                            .step-text { font-size: 0.85rem; color: #4a5568; line-height: 1.4; }
+
+                            /* Espaciado especial para la fila de abajo */
+                            .step-card:nth-last-child(-n+2) {
+                                margin-top: 15px; /* Separación extra arriba */
+                                width: 35%; /* Un poco más anchos los de abajo */
+                            }
+
+                            /* Firma */
+                            .signature-box {
+                                margin-top: 35px;
+                                padding-top: 20px;
+                                border-top: 1px solid #eee;
+                                text-align: center;
+                            }
+                            .sig-name { color: #52277c; font-weight: 700; font-size: 1.1rem; margin: 0; }
+                            .sig-role { color: #4a5568; font-size: 0.9rem; margin: 2px 0 5px 0; font-weight: 500; }
+                            .sig-contact { color: #718096; font-size: 0.85rem; }
+                            .sig-contact i { color: #25d366; margin-right: 5px; }
+
                         </style>
 
-                        <div class="success-header">
+                        <div>
                             <h2 class="success-title"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> ¡Registro Exitoso!</h2>
                             <p class="success-subtitle">Hemos recibido los datos de <strong>${items.length}</strong> equipos correctamente.</p>
                         </div>
 
-                        <div class="recommendation-box">
-                            <div class="rec-title"><i class="fa-solid fa-shield-heart"></i> PARA UN ENVÍO SEGURO</div>
+                        <div class="rec-box">
+                            <div class="rec-badge"><i class="fa-solid fa-shield-halved"></i> RECOMENDACIONES DE EMPAQUE</div>
                             
-                            <div class="steps-grid">
+                            <div class="steps-container">
                                 <div class="step-card">
-                                    <i class="step-icon fa-solid fa-box-open"></i>
-                                    <span class="step-num">1. ESTADO DE CAJA</span>
-                                    <span class="step-text">Usa caja doble pared en buen estado. Retira etiquetas viejas.</span>
+                                    <i class="step-icon fa-solid fa-box-archive"></i>
+                                    <span class="step-num">1. Estado de Caja</span>
+                                    <span class="step-text">Usa caja doble pared sin daños. Retira etiquetas antiguas.</span>
                                 </div>
                                 <div class="step-card">
-                                    <i class="step-icon fa-solid fa-ruler-combined"></i>
-                                    <span class="step-num">2. TAMAÑO</span>
-                                    <span class="step-text">La caja debe ser mín. <strong>8 cm más grande</strong> que el equipo.</span>
+                                    <i class="step-icon fa-solid fa-maximize"></i>
+                                    <span class="step-num">2. Tamaño Adecuado</span>
+                                    <span class="step-text">La caja debe ser mín. <strong>8 cm más grande</strong> que el instrumento.</span>
                                 </div>
                                 <div class="step-card">
                                     <i class="step-icon fa-solid fa-layer-group"></i>
-                                    <span class="step-num">3. RELLENO</span>
-                                    <span class="step-text">Usa espuma/burbuja (8 cm espesor) y centra el equipo.</span>
+                                    <span class="step-num">3. Relleno Seguro</span>
+                                    <span class="step-text">Usa espuma o burbuja (8 cm espesor) y centra el equipo.</span>
                                 </div>
+
                                 <div class="step-card">
                                     <i class="step-icon fa-solid fa-tape"></i>
-                                    <span class="step-num">4. SELLADO</span>
-                                    <span class="step-text">Cierra con cinta formando una "H" arriba y abajo.</span>
+                                    <span class="step-num">4. Sellado en H</span>
+                                    <span class="step-text">Cierra firmemente con cinta en forma de H (arriba y abajo).</span>
                                 </div>
                                 <div class="step-card">
-                                    <i class="step-icon fa-solid fa-file-invoice"></i>
-                                    <span class="step-num">5. RÓTULO</span>
-                                    <span class="step-text">Pega datos de remitente y destinatario visiblemente.</span>
+                                    <i class="step-icon fa-solid fa-clipboard-check"></i>
+                                    <span class="step-num">5. Rótulo Visible</span>
+                                    <span class="step-text">Pega los datos de remitente y destinatario en la parte superior.</span>
                                 </div>
                             </div>
-                        </div>
+                        </div>                       
                         
-                        <p style="margin-top: 25px; font-weight: 600; color: #52277c; font-size: 1.1rem;">
-                            ¡Gracias por confiar en los expertos de Sievert LCD!
-                        </p>
                     `,
                     showConfirmButton: true,
                     confirmButtonText: 'Entendido, Finalizar',
