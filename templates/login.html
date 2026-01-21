@@ -246,13 +246,14 @@
 
     <script>
         // 1. INICIALIZAR SUPABASE
+        // Flask inyecta las variables desde tu .env automáticamente
         const SUPABASE_URL = "{{ supabase_url }}";
         const SUPABASE_KEY = "{{ supabase_key }}";
         
+        // Creamos el cliente con un nombre único para evitar conflictos
         const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
 
-        // 2. LÓGICA DEL BOTÓN DE VER/OCULTAR CONTRASEÑA
+        // 2. TOGGLE PASSWORD (OJO)
         const togglePassword = document.querySelector('#password-toggle');
         const passwordInput = document.querySelector('#password');
 
@@ -274,21 +275,20 @@
             const btn = document.getElementById('login-button');
             const errorMsg = document.getElementById('error-message');
 
-            // Estado de carga
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
             btn.disabled = true;
             errorMsg.style.display = 'none';
 
             try {
-                // PASO A: Autenticar con Supabase (Usando la variable corregida _supabase)
-                const { data, error } = await _supabase.auth.signInWithPassword({
+                // AQUÍ ESTABA EL ERROR: Ahora usamos 'sbClient' consistentemente
+                const { data, error } = await sbClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
 
                 if (error) throw error;
 
-                // PASO B: Crear sesión en servidor Python
+                // Enviar al backend
                 const response = await fetch('/api/set-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -298,12 +298,11 @@
                 if (response.ok) {
                     window.location.href = "{{ url_for('home') }}";
                 } else {
-                    throw new Error("Error sincronizando la sesión.");
+                    throw new Error("Error estableciendo sesión en el servidor.");
                 }
 
             } catch (err) {
                 console.error("Login error:", err);
-                // Si el error es de credenciales, mostramos mensaje amigable
                 if (err.message.includes("Invalid login credentials")) {
                     errorMsg.innerText = "Correo o contraseña incorrectos.";
                 } else {
@@ -311,8 +310,6 @@
                 }
                 
                 errorMsg.style.display = 'block';
-                
-                // Efecto visual
                 btn.classList.add('shake');
                 setTimeout(() => btn.classList.remove('shake'), 500);
                 
