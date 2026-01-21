@@ -10,15 +10,13 @@
     
     <style>
         :root {
-            /* --- PALETA OFICIAL SIEVERT (Según Manual) --- */
-            --sievert-purple: #52277c; /* Pantone 2607 C */
-            --sievert-orange: #e43d30; /* Pantone 179 C */
+            /* --- PALETA OFICIAL SIEVERT --- */
+            --sievert-purple: #52277c;
+            --sievert-orange: #e43d30;
             --sievert-dark-green: #112E3C; 
             --sievert-gray: #575756;
             --white: #ffffff;
             --bg-light: #F4F7F6;
-            
-            /* Configuraciones de fuente */
             --font-main: 'Ubuntu', sans-serif;
         }
 
@@ -34,7 +32,6 @@
             padding: 20px;
         }
 
-        /* --- CONTENEDOR PRINCIPAL (Split Layout) --- */
         .login-container {
             display: flex;
             width: 100%;
@@ -49,7 +46,6 @@
         /* --- PANEL IZQUIERDO (Branding) --- */
         .branding-panel {
             width: 45%;
-            /* Degradado oficial Morado -> Naranja (Diagonal) */
             background: linear-gradient(135deg, var(--sievert-purple) 0%, #855BAF 100%);
             color: white;
             padding: 40px;
@@ -61,7 +57,6 @@
             position: relative;
         }
         
-        /* Elemento decorativo sutil (círculos del manual) */
         .branding-panel::before {
             content: '';
             position: absolute;
@@ -74,7 +69,7 @@
         .branding-panel img {
             max-width: 160px;
             margin-bottom: 25px;
-            filter: brightness(0) invert(1); /* Vuelve el logo blanco si es necesario */
+            filter: brightness(0) invert(1); /* Logo blanco */
         }
 
         .branding-panel h1 {
@@ -166,7 +161,6 @@
             padding: 15px;
             border: none;
             border-radius: 8px;
-            /* Degradado en el botón para resaltar */
             background: linear-gradient(90deg, var(--sievert-purple) 0%, #6a488c 100%);
             color: white;
             font-size: 1rem;
@@ -200,12 +194,17 @@
             border-radius: 6px;
         }
 
-        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             .login-container { flex-direction: column; max-width: 400px; }
             .branding-panel, .form-panel { width: 100%; }
             .branding-panel { padding: 30px 20px; }
             .form-panel { padding: 30px; }
+        }
+        
+        /* Animación de error */
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); }
         }
     </style>
 </head>
@@ -243,18 +242,16 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    
     <script>
-        // 1. INICIALIZAR SUPABASE (Cliente Público)
-        // Estas claves son PÚBLICAS (Anon Key), es seguro tenerlas aquí.
-        // La clave secreta (Service Role) está protegida en tu servidor (.env).
+        // 1. INICIALIZACIÓN ÚNICA DE SUPABASE (Cliente Público)
         const SUPABASE_URL = 'https://sffcleemdtbbgexiqqeb.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmZmNsZWVtZHRiYmdleGlxcWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTg2NzEsImV4cCI6MjA2NzEzNDY3MX0.-7z2Gh2xwd-npWvt4rXu8qJZmwH8LEEsW9mm9G7yFfg';
         
+        // Creamos el cliente UNA sola vez
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 2. LÓGICA DEL BOTÓN DE VER/OCULTAR CONTRASEÑA
+        // 2. TOGGLE PASSWORD
         const togglePassword = document.querySelector('#password-toggle');
         const passwordInput = document.querySelector('#password');
 
@@ -267,7 +264,7 @@
             });
         }
 
-        // 3. LÓGICA DE INICIO DE SESIÓN (MODERNA)
+        // 3. PROCESO DE LOGIN
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -276,13 +273,12 @@
             const btn = document.getElementById('login-button');
             const errorMsg = document.getElementById('error-message');
 
-            // Estado de carga
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
             btn.disabled = true;
             errorMsg.style.display = 'none';
 
             try {
-                // PASO A: Autenticar directamente con Supabase
+                // PASO A: Autenticar con Supabase
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password
@@ -290,7 +286,7 @@
 
                 if (error) throw error;
 
-                // PASO B: Avisar a nuestro servidor Python para crear la sesión segura
+                // PASO B: Crear sesión en servidor Python
                 const response = await fetch('/api/set-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -298,18 +294,17 @@
                 });
 
                 if (response.ok) {
-                    // ÉXITO: Redirigir al dashboard
                     window.location.href = "{{ url_for('home') }}";
                 } else {
-                    throw new Error("Error sincronizando la sesión con el servidor.");
+                    throw new Error("Error sincronizando sesión.");
                 }
 
             } catch (err) {
-                console.error("Error de login:", err);
-                errorMsg.innerText = "Credenciales incorrectas o error de conexión.";
+                console.error("Login error:", err);
+                errorMsg.innerText = "Credenciales inválidas o error de conexión.";
                 errorMsg.style.display = 'block';
                 
-                // Efecto visual de error (vibración)
+                // Efecto visual
                 btn.classList.add('shake');
                 setTimeout(() => btn.classList.remove('shake'), 500);
                 
