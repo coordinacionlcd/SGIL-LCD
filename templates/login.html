@@ -246,12 +246,12 @@
 
     <script>
         // 1. INICIALIZAR SUPABASE
-        const SUPABASE_URL = 'https://sffcleemdtbbgexiqqeb.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmZmNsZWVtZHRiYmdleGlxcWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTg2NzEsImV4cCI6MjA2NzEzNDY3MX0.-7z2Gh2xwd-npWvt4rXu8qJZmwH8LEEsW9mm9G7yFfg';
+        const SUPABASE_URL = "{{ supabase_url }}";
+        const SUPABASE_KEY = "{{ supabase_key }}";
         
-        // CORRECCIÓN AQUÍ: Usamos '_supabase' en lugar de 'supabase' para no chocar con la librería
         const { createClient } = supabase;
-        const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
 
         // 2. LÓGICA DEL BOTÓN DE VER/OCULTAR CONTRASEÑA
         const togglePassword = document.querySelector('#password-toggle');
