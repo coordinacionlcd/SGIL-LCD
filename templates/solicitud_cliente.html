@@ -137,7 +137,7 @@
         }
         .whatsapp-link:hover { background: #dcfce7; color: #16a34a; }
 
-        /* Estilo para la nueva Nota Importante de Diligenciamiento */
+        /* ESTILOS PARA LA NOTA AMARILLA */
         .instruction-box {
             background: #fffbeb; border-left: 5px solid #f59e0b; padding: 25px; 
             margin-bottom: 30px; border-radius: 0 8px 8px 0;
@@ -145,10 +145,17 @@
         .instruction-title { color: #92400e; font-weight: 700; margin-bottom: 15px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .instruction-list { padding-left: 20px; margin: 0; color: #78350f; font-size: 0.9rem; line-height: 1.6; }
         .instruction-list li { margin-bottom: 8px; }
-        .instruction-footer {
+        
+        /* Enlace de soporte dentro de la nota amarilla */
+        .support-link {
             margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(146, 64, 14, 0.2);
-            font-size: 0.9rem; color: #92400e; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            color: #92400e; font-size: 0.9rem;
         }
+        .whatsapp-btn-inline {
+            color: #16a34a; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(37, 211, 102, 0.1); padding: 2px 8px; border-radius: 4px; transition: 0.2s;
+        }
+        .whatsapp-btn-inline:hover { background: rgba(37, 211, 102, 0.2); }
 
     </style>
 </head>
@@ -229,8 +236,8 @@
         <div class="instruction-box">
             <div class="instruction-title"><i class="fa-solid fa-list-check"></i> Indicaciones de Diligenciamiento:</div>
             <ol class="instruction-list">
-                <li><strong>Equipo de Medición:</strong> Las pruebas de contaminación deben realizarse con un instrumento diferente a los que se enviarán a calibrar.</li>
-                <li><strong>Registro Individual:</strong> Realice la medición por separado para cada instrumento del despacho.</li>
+                <li><strong>Equipo de Medición:</strong> Las mediciones de contaminación deben realizarse con un instrumento diferente a los que se enviarán a calibrar.</li>
+                <li><strong>Registro Individual:</strong> Realice la medición por separado para cada instrumento del despacho y diligencie la información del mismo en </li>
                 <li><strong>Detectores Externos:</strong> Si el equipo requiere sonda/detector externo, registre únicamente la información de dicho detector.</li>
                 <li><strong>Límite:</strong> El límite de contaminación es establecido por el OPR de su institución.</li>
             </ol>          
@@ -302,13 +309,22 @@
 
     <div class="signature-footer">
         <div class="sig-line"></div>
-        <a href="https://wa.me/573176388661" target="_blank" style="text-decoration:none;">
-            <p class="sig-name">Diana Ortegón Pineda <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.8rem;"></i></p>
-        </a>
+        <p class="sig-name">Diana Ortegón Pineda</p>
         <p class="sig-role">Coordinadora LCD</p>
-        <p class="sig-contact">
-            <i class="fa-brands fa-whatsapp"></i> (+57) 317 638 8661 - 310 564 3619
-        </p>
+        
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 15px;">
+            <span style="color: #718096; font-size: 0.95rem;">
+                (+57) 317 638 8661 - 310 564 3619
+            </span>
+
+            <a href="https://wa.me/573176388661" target="_blank" title="Clic para chatear en WhatsApp" style="text-decoration: none;">
+                <i class="fa-brands fa-whatsapp" 
+                   style="font-size: 2.8rem; color: #25d366; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); transition: transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.15)'" 
+                   onmouseout="this.style.transform='scale(1)'">
+                </i>
+            </a>
+        </div>
     </div>
 </div>
 
