@@ -242,16 +242,18 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        // 1. INICIALIZACIÓN ÚNICA DE SUPABASE (Cliente Público)
+        // 1. INICIALIZAR SUPABASE
         const SUPABASE_URL = 'https://sffcleemdtbbgexiqqeb.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmZmNsZWVtZHRiYmdleGlxcWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTg2NzEsImV4cCI6MjA2NzEzNDY3MX0.-7z2Gh2xwd-npWvt4rXu8qJZmwH8LEEsW9mm9G7yFfg';
         
-        // Creamos el cliente UNA sola vez
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // CORRECCIÓN AQUÍ: Usamos '_supabase' en lugar de 'supabase' para no chocar con la librería
+        const { createClient } = supabase;
+        const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 2. TOGGLE PASSWORD
+        // 2. LÓGICA DEL BOTÓN DE VER/OCULTAR CONTRASEÑA
         const togglePassword = document.querySelector('#password-toggle');
         const passwordInput = document.querySelector('#password');
 
@@ -264,7 +266,7 @@
             });
         }
 
-        // 3. PROCESO DE LOGIN
+        // 3. LÓGICA DE INICIO DE SESIÓN
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -273,13 +275,14 @@
             const btn = document.getElementById('login-button');
             const errorMsg = document.getElementById('error-message');
 
+            // Estado de carga
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
             btn.disabled = true;
             errorMsg.style.display = 'none';
 
             try {
-                // PASO A: Autenticar con Supabase
-                const { data, error } = await supabase.auth.signInWithPassword({
+                // PASO A: Autenticar con Supabase (Usando la variable corregida _supabase)
+                const { data, error } = await _supabase.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
@@ -296,12 +299,18 @@
                 if (response.ok) {
                     window.location.href = "{{ url_for('home') }}";
                 } else {
-                    throw new Error("Error sincronizando sesión.");
+                    throw new Error("Error sincronizando la sesión.");
                 }
 
             } catch (err) {
                 console.error("Login error:", err);
-                errorMsg.innerText = "Credenciales inválidas o error de conexión.";
+                // Si el error es de credenciales, mostramos mensaje amigable
+                if (err.message.includes("Invalid login credentials")) {
+                    errorMsg.innerText = "Correo o contraseña incorrectos.";
+                } else {
+                    errorMsg.innerText = "Error de conexión: " + err.message;
+                }
+                
                 errorMsg.style.display = 'block';
                 
                 // Efecto visual
