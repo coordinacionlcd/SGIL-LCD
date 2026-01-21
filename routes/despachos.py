@@ -142,6 +142,7 @@ def send_notification_emails(data):
             # Los correos no pueden leer imágenes locales (/static/...). 
             # He puesto un link de ejemplo. Si tienes el logo en tu web, cambia el 'src' por ese link.
             # Si no, funcionará como un texto alternativo.
+            logo_url = "https://coordinacionlcd.pythonanywhere.com/static/img/Logo_LCD.png"
             
             html_client = f"""
             <html>
@@ -149,7 +150,7 @@ def send_notification_emails(data):
                 <div style="max-width: 600px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                     
                     <div style="text-align: center; padding: 20px; background-color: #ffffff; border-bottom: 1px solid #eee;">
-                         <img src="https://sievert.com.co/wp-content/uploads/2020/10/Logo-Sievert-LCD.png" alt="Sievert LCD" style="max-height: 60px;">
+                         <img src="{logo_url}" alt="Sievert LCD" style="max-height: 80px; width: auto;">
                     </div>
 
                     <div style="background-color: #52277c; color: white; padding: 25px; text-align: center;">
