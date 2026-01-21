@@ -87,7 +87,7 @@ def send_notification_emails(data):
     msg_internal['From'] = f"Sievert Sistema <{sender_email}>"
     msg_internal['To'] = ", ".join(recipients_internal)
 
-    # HTML Logística Actualizado (Sin campos eliminados)
+    # HTML Logística (Solo Cliente, NIT y Equipos)
     html_internal = f"""
     <html>
     <body style="font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0;">
@@ -98,17 +98,11 @@ def send_notification_emails(data):
             </div>
             <div style="padding: 30px;">
                 <div style="background-color: #f8fafc; border-left: 4px solid #52277c; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
-                    <h3 style="color: #003366; margin-top: 0; margin-bottom: 15px; font-size: 16px;">📦 Datos del Cliente</h3>
+                    <h3 style="color: #003366; margin-top: 0; margin-bottom: 15px; font-size: 16px;">📦 Datos Generales</h3>
                     <p style="margin: 5px 0;"><strong>🏢 Cliente:</strong> {data.get('cliente')}</p>
                     <p style="margin: 5px 0;"><strong>🆔 NIT:</strong> {data.get('nit')}</p>
                 </div>
-                <div style="margin-bottom: 20px;">
-                    <h3 style="color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 15px;">👤 Contacto en Sitio</h3>
-                    <ul style="list-style: none; padding: 0; color: #333;">
-                        <li style="margin-bottom: 8px;">• <strong>Nombre:</strong> {data.get('responsable_medicion')} ({data.get('cargo')})</li>
-                        <li style="margin-bottom: 8px;">• <strong>Email:</strong> {data.get('email')}</li>
-                    </ul>
-                </div>
+
                 <div>
                     <h3 style="color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 15px;">☢️ Equipos a Recoger: {len(data.get('items', []))}</h3>
                     <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
@@ -134,39 +128,56 @@ def send_notification_emails(data):
         server.starttls()
         server.login(sender_email, sender_password)
         
+        # Enviar Interno
         server.sendmail(sender_email, recipients_internal, msg_internal.as_string())
         
+        # Enviar a Cliente
         if client_email:
             msg_client = MIMEMultipart()
             msg_client['Subject'] = f"✅ Solicitud Recibida - Sievert LCD"
             msg_client['From'] = f"Sievert LCD <{sender_email}>"
             msg_client['To'] = client_email
 
+            # NOTA SOBRE EL LOGO: 
+            # Los correos no pueden leer imágenes locales (/static/...). 
+            # He puesto un link de ejemplo. Si tienes el logo en tu web, cambia el 'src' por ese link.
+            # Si no, funcionará como un texto alternativo.
+            
             html_client = f"""
             <html>
             <body style="font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0;">
                 <div style="max-width: 600px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    
+                    <div style="text-align: center; padding: 20px; background-color: #ffffff; border-bottom: 1px solid #eee;">
+                         <img src="https://sievert.com.co/wp-content/uploads/2020/10/Logo-Sievert-LCD.png" alt="Sievert LCD" style="max-height: 60px;">
+                    </div>
+
                     <div style="background-color: #52277c; color: white; padding: 25px; text-align: center;">
                         <h1 style="margin: 0; font-size: 22px;">¡Solicitud Recibida!</h1>
                         <p style="margin: 10px 0 0 0; opacity: 0.9;">Hemos registrado su información correctamente.</p>
                     </div>
+
                     <div style="padding: 30px;">
                         <p style="color: #333; font-size: 16px;">Hola <strong>{data.get('responsable_medicion')}</strong>,</p>
                         <p style="color: #555; line-height: 1.5;">
                             Confirmamos que hemos recibido la información técnica y de contaminación para <strong>{len(data.get('items', []))} equipos</strong>.
                             Nuestro equipo logístico ha sido notificado y procederá con la programación de la recolección.
                         </p>
+                        
                         <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 6px; margin: 20px 0;">
                             <strong style="color: #166534; display: block; margin-bottom: 5px;">📋 Resumen de Equipos Registrados:</strong>
                             <ul style="margin: 0; padding-left: 20px; color: #14532d;">
                                 {''.join([f'<li>{i.get("marca")} {i.get("modelo")} (SN: {i.get("serie")})</li>' for i in data.get('items', [])])}
                             </ul>
                         </div>
-                        <p style="color: #666; font-size: 13px; text-align: center; margin-top: 30px;">
+
+                        <p style="color: #666; font-size: 13px; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
                             Si tienes alguna duda, contacta a Coordinación:<br>
-                            <strong style="color: #52277c;">(+57) 317 638 8661</strong>
+                            <strong style="color: #52277c; font-size: 14px;">Diana Ortegón Pineda</strong><br>
+                            <span style="color: #52277c;">(+57) 317 638 8661</span>
                         </p>
                     </div>
+                    
                     <div style="background-color: #eee; padding: 15px; text-align: center; font-size: 11px; color: #888;">
                         Sievert LCD - Laboratorio de Calibración Dosimétrica<br>
                         Este es un mensaje automático, por favor no responder.
