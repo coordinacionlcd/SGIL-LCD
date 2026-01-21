@@ -4,45 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitud de Servicio | Sievert LCD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        
-        .header { background: #52277c; color: white; padding: 30px; text-align: center; }
-        .header img { max-width: 120px; filter: brightness(0) invert(1); margin-bottom: 10px; }
-        .header h2 { margin: 0; font-weight: 600; }
+        :root {
+            --primary: #52277c;
+            --secondary: #e43d30;
+            --bg-light: #f8f9fa;
+            --text-dark: #333;
+            --text-muted: #666;
+            --border-color: #e9ecef;
+        }
 
-        .section { padding: 30px; border-bottom: 1px solid #eee; }
-        .section-title { color: #52277c; font-size: 1.2rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-left: 4px solid #e43d30; padding-left: 10px; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg-light); 
+            margin: 0; 
+            padding: 20px; 
+            color: var(--text-dark);
+        }
         
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; font-size: 0.9rem; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
-        .full-width { grid-column: span 2; }
+        /* Contenedor más ancho para usar mejor el espacio */
+        .container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
+            overflow: hidden; 
+        }
+        
+        /* Header más elegante y minimalista */
+        .header { 
+            background: linear-gradient(135deg, var(--primary), #3a1b59); 
+            color: white; 
+            padding: 25px; 
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .header img { max-width: 100px; filter: brightness(0) invert(1); }
+        .header h2 { margin: 0; font-weight: 500; font-size: 1.5rem; letter-spacing: 0.5px; }
+        .header p { margin: 5px 0 0 0; font-weight: 300; font-size: 0.9rem; opacity: 0.9; }
 
-        /* Estilos de la Tabla Dinámica */
-        .table-responsive { overflow-x: auto; margin-top: 20px; }
+        /* Secciones compactas */
+        .section { padding: 25px 30px; border-bottom: 1px solid var(--border-color); }
+        .section-title { 
+            color: var(--primary); 
+            font-size: 1.1rem; 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: 500;
+        }
+        .section-title i { color: var(--secondary); }
+        
+        /* Grid de 3 columnas para ahorrar espacio vertical */
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        
+        /* Inputs más pequeños y refinados */
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; margin-bottom: 4px; color: var(--text-muted); font-weight: 500; font-size: 0.8rem; }
+        .form-control { 
+            width: 100%; 
+            padding: 8px 12px; /* Padding reducido */
+            border: 1px solid #ced4da; 
+            border-radius: 6px; 
+            font-family: inherit; 
+            font-size: 0.9rem; /* Fuente más pequeña */
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(82, 39, 124, 0.1); }
+
+        /* Tabla Dinámica Elegante */
+        /* Inicialmente oculta */
+        .table-responsive { overflow-x: auto; margin-top: 20px; display: none; border: 1px solid var(--border-color); border-radius: 8px; }
         .equipment-table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        .equipment-table th { background: #f8f9fa; padding: 10px; text-align: left; font-size: 0.85rem; color: #666; border-bottom: 2px solid #ddd; }
-        .equipment-table td { padding: 8px; border-bottom: 1px solid #eee; }
-        .equipment-table input, .equipment-table select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .equipment-table th { 
+            background: #f1f3f5; 
+            padding: 10px 12px; 
+            text-align: left; 
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color); 
+        }
+        .equipment-table td { padding: 8px; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+        /* Inputs dentro de la tabla aún más compactos */
+        .equipment-table input, .equipment-table select { 
+            width: 100%; 
+            padding: 6px 10px; 
+            border: 1px solid #ced4da; 
+            border-radius: 4px; 
+            font-size: 0.85rem;
+        }
         
-        .info-tip { font-size: 0.75rem; color: #e43d30; margin-top: 4px; display: block; }
+        .info-tip { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+        .info-tip i { color: var(--primary); }
         
-        .btn-action { cursor: pointer; border: none; padding: 5px 10px; border-radius: 4px; color: white; }
-        .btn-add { background: #28a745; }
-        .btn-remove { background: #dc3545; }
+        .btn-action { cursor: pointer; border: none; padding: 6px 10px; border-radius: 4px; color: white; font-size: 0.8rem; transition: 0.2s; }
+        .btn-remove { background: #ff6b6b; color: white; }
+        .btn-remove:hover { background: #fa5252; }
 
-        .footer-actions { padding: 30px; text-align: right; background: #f9f9f9; }
-        .btn-submit { background: #52277c; color: white; border: none; padding: 15px 40px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-submit:hover { background: #3a1b59; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(82, 39, 124, 0.3); }
+        .footer-actions { padding: 25px 30px; text-align: right; background: #fafafa; }
+        .btn-submit { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 6px; 
+            font-size: 0.95rem; 
+            font-weight: 500; 
+            cursor: pointer; 
+            transition: 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn-submit:hover { background: #442066; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(82, 39, 124, 0.2); }
 
-        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
+        /* Responsive para móviles */
+        @media (max-width: 768px) { 
+            .form-grid { grid-template-columns: 1fr; gap: 10px; } 
+            .header { flex-direction: column; text-align: center; gap: 10px; padding: 20px; }
+            .section { padding: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -50,116 +139,134 @@
 <div class="container">
     <div class="header">
         <img src="{{ url_for('static', filename='img/Logo_LCD.png') }}" alt="Sievert LCD">
-        <h2>Registro de Equipos</h2>
-        <p>Formulario de ingreso técnico</p>
+        <div>
+            <h2>Solicitud de Servicio Técnico</h2>
+            <p>Registro de equipos para ingreso al laboratorio</p>
+        </div>
     </div>
 
     <form id="techForm">
         <div class="section">
-            <h3 class="section-title"><i class="fa-solid fa-building"></i> 1. Información del Cliente</h3>
+            <h3 class="section-title"><i class="fa-solid fa-building-user"></i> Información del Cliente</h3>
             <div class="form-grid">
-                <div class="form-group">
-                    <label>Razón Social / Institución</label>
-                    <input type="text" name="cliente" class="form-control" required>
+                <div class="form-group" style="grid-column: span 2;"> <label>Razón Social / Institución</label>
+                    <input type="text" name="cliente" class="form-control" required placeholder="Nombre de la empresa o clínica">
                 </div>
                 <div class="form-group">
                     <label>NIT</label>
-                    <input type="text" name="nit" class="form-control" required>
+                    <input type="text" name="nit" class="form-control" required placeholder="Sin dígitos de verificación">
                 </div>
+                
                 <div class="form-group">
-                    <label>Responsable Medición</label>
-                    <input type="text" name="responsable_medicion" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Cargo</label>
-                    <input type="text" name="cargo" class="form-control" required>
-                </div>
-                <div class="form-group full-width">
-                    <label>Responsable General (Contacto Administrativo)</label>
-                    <input type="text" name="responsable_general" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Dirección</label>
+                    <label>Dirección de Recolección</label>
                     <input type="text" name="direccion" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label>Teléfono</label>
+                    <label>Ciudad</label> <input type="text" name="ciudad" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono / Celular</label>
                     <input type="tel" name="telefono" class="form-control" required>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label>Responsable de la Medición</label>
+                    <input type="text" name="responsable_medicion" class="form-control" required placeholder="Quien usó el equipo">
+                </div>
+                <div class="form-group">
+                    <label>Cargo del Responsable</label>
+                    <input type="text" name="cargo" class="form-control" required>
+                </div>
+                 </div>
         </div>
 
-        <div class="section">
-            <h3 class="section-title"><i class="fa-solid fa-microscope"></i> 2. Instrumento de Medición (Referencia)</h3>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Datos del equipo con el que realizó las mediciones previas al envío.</p>
+        <div class="section" style="background: #fafafa;">
+            <h3 class="section-title"><i class="fa-solid fa-microscope"></i> Instrumento de Referencia (Patrón Utilizado)</h3>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Marca</label>
-                    <input type="text" name="ref_marca" class="form-control" required>
+                    <input type="text" name="ref_marca" class="form-control" required placeholder="Ej: RaySafe">
                 </div>
                 <div class="form-group">
                     <label>Modelo</label>
-                    <input type="text" name="ref_modelo" class="form-control" required>
+                    <input type="text" name="ref_modelo" class="form-control" required placeholder="Ej: X2">
                 </div>
                 <div class="form-group">
-                    <label>Serie</label>
+                    <label>No. de Serie</label>
                     <input type="text" name="ref_serie" class="form-control" required>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h3 class="section-title"><i class="fa-solid fa-box-open"></i> 3. Equipos a Despachar</h3>
+            <h3 class="section-title"><i class="fa-solid fa-box-open"></i> Equipos a Despachar</h3>
             
-            <div class="form-group" style="max-width: 200px;">
-                <label>¿Cuántos equipos enviará?</label>
-                <input type="number" id="qtyInput" class="form-control" min="1" value="1" onchange="generateRows()">
+            <div style="display: flex; align-items: center; gap: 15px; background: #f1f3f5; padding: 15px; border-radius: 8px; max-width: 400px;">
+                <i class="fa-solid fa-calculator" style="color: var(--primary); font-size: 1.2rem;"></i>
+                <div class="form-group" style="margin-bottom: 0; flex-grow: 1;">
+                    <label style="margin-bottom: 2px;">¿Cuántos equipos enviará?</label>
+                    <input type="number" id="qtyInput" class="form-control" min="0" value="0" onchange="generateRows()" style="font-weight: bold; color: var(--primary);">
+                </div>
             </div>
 
-            <div class="table-responsive">
+            <div class="table-responsive" id="itemsContainer">
                 <table class="equipment-table" id="itemsTable">
                     <thead>
                         <tr>
-                            <th width="15%">Modelo</th>
-                            <th width="15%">Serie</th>
-                            <th width="10%">Unidad</th>
-                            <th width="12%">Fondo</th>
-                            <th width="12%">Instrumento</th>
-                            <th width="12%">Neto</th>
-                            <th width="18%">Límite</th>
-                            <th width="5%"></th>
+                            <th style="width: 18%">Modelo</th>
+                            <th style="width: 18%">Serie</th>
+                            <th style="width: 10%">Unidad</th>
+                            <th style="width: 12%">Fondo</th>
+                            <th style="width: 12%">Instrumento</th>
+                            <th style="width: 12%">Neto</th>
+                            <th style="width: 15%">Límite</th>
+                            <th style="width: 3%"></th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
                         </tbody>
                 </table>
-                <button type="button" onclick="addRow()" style="margin-top: 10px; background: #eee; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; color: #333;">
-                    <i class="fa-solid fa-plus"></i> Agregar otra fila
-                </button>
             </div>
         </div>
 
         <div class="footer-actions">
-            <button type="submit" class="btn-submit">Guardar y Enviar Solicitud</button>
+            <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Enviar Solicitud
+            </button>
         </div>
     </form>
 </div>
 
 <script>
-    // 1. Generador de filas inicial
+    // 1. Generador de filas y control de visibilidad
     function generateRows() {
-        const qty = parseInt(document.getElementById('qtyInput').value) || 1;
+        const qtyInput = document.getElementById('qtyInput');
+        let qty = parseInt(qtyInput.value) || 0;
+        
+        // Validar que no sea negativo
+        if (qty < 0) {
+            qty = 0;
+            qtyInput.value = 0;
+        }
+
+        const container = document.getElementById('itemsContainer');
         const tbody = document.getElementById('tableBody');
         
-        // Si hay menos filas, agregar. Si hay más, preguntar o ajustar. 
-        // Para simplificar, si cambia el número, ajustamos sin borrar datos existentes si es posible
+        // Control de visibilidad de la tabla
+        if (qty > 0) {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+            tbody.innerHTML = ''; // Limpiar si es 0
+            return;
+        }
         
         const currentRows = tbody.rows.length;
         
         if (qty > currentRows) {
             for (let i = 0; i < (qty - currentRows); i++) addRow();
         } else if (qty < currentRows) {
-            // Eliminar las ultimas
+            // Eliminar las últimas si el usuario reduce el número
             for (let i = 0; i < (currentRows - qty); i++) {
                 tbody.deleteRow(tbody.rows.length - 1);
             }
@@ -172,7 +279,7 @@
         const row = tbody.insertRow();
         
         row.innerHTML = `
-            <td><input type="text" name="modelo[]" required placeholder="Modelo"></td>
+            <td><input type="text" name="modelo[]" required placeholder="Modelo del equipo"></td>
             <td><input type="text" name="serie[]" required placeholder="S/N"></td>
             <td>
                 <select name="unidad[]" onchange="calcNet(this)">
@@ -183,30 +290,33 @@
                     <option value="Bq">Bq</option>
                 </select>
             </td>
-            <td><input type="number" step="any" name="fondo[]" required oninput="calcNet(this)" placeholder="0"></td>
-            <td><input type="number" step="any" name="inst[]" required oninput="calcNet(this)" placeholder="0"></td>
-            <td><input type="text" name="neto[]" readonly style="background: #f0f0f0; font-weight: bold;"></td>
+            <td><input type="number" step="any" name="fondo[]" required oninput="calcNet(this)" placeholder="0.0"></td>
+            <td><input type="number" step="any" name="inst[]" required oninput="calcNet(this)" placeholder="0.0"></td>
+            <td><input type="text" name="neto[]" readonly style="background: #f8f9fa; font-weight: 600; color: var(--primary); border-color: transparent;"></td>
             <td>
-                <input type="number" step="any" name="limite[]" required placeholder="Límite">
-                <span class="info-tip"><i class="fa-solid fa-circle-info"></i> Consultar OPR</span>
+                <input type="number" step="any" name="limite[]" required placeholder="Ej: 100">
+                <span class="info-tip"><i class="fa-solid fa-circle-info"></i> Consultar al OPR el límite establecido internamente</span>
             </td>
-            <td>
-                <button type="button" class="btn-action btn-remove" onclick="removeRow(this)"><i class="fa-solid fa-trash"></i></button>
+            <td style="vertical-align: middle; text-align: center;">
+                <button type="button" class="btn-action btn-remove" onclick="removeRowManual(this)" title="Eliminar esta fila"><i class="fa-solid fa-times"></i></button>
             </td>
         `;
-        
-        // Actualizar el contador
-        document.getElementById('qtyInput').value = tbody.rows.length;
+        calcNet(row.querySelector('input[name="fondo[]"]')); // Calcular inicial
     }
 
-    // 3. Eliminar fila
-    function removeRow(btn) {
+    // Eliminar fila manualmente y ajustar el contador
+    function removeRowManual(btn) {
         const row = btn.parentNode.parentNode;
         row.parentNode.removeChild(row);
+        // Actualizar el input de cantidad
         document.getElementById('qtyInput').value = document.getElementById('tableBody').rows.length;
+        // Si llega a 0, ocultar tabla
+        if (document.getElementById('tableBody').rows.length === 0) {
+             document.getElementById('itemsContainer').style.display = 'none';
+        }
     }
 
-    // 4. Calcular Neto
+    // 3. Calcular Neto
     function calcNet(input) {
         const row = input.parentNode.parentNode;
         const fondo = parseFloat(row.querySelector('input[name="fondo[]"]').value) || 0;
@@ -214,37 +324,38 @@
         const netoInput = row.querySelector('input[name="neto[]"]');
         
         const neto = inst - fondo;
-        // Redondear a 2 decimales si es necesario
+        // Redondear a 3 decimales para precisión
         netoInput.value = Math.round(neto * 1000) / 1000;
     }
 
-    // Inicializar con 1 fila
-    window.onload = function() {
-        if(document.getElementById('tableBody').rows.length === 0) addRow();
-    };
-
-    // 5. ENVÍO DEL FORMULARIO
+    // 4. ENVÍO DEL FORMULARIO
     document.getElementById('techForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // Validar que haya al menos un equipo si el contador es > 0
+        const qty = parseInt(document.getElementById('qtyInput').value) || 0;
+        if (qty > 0 && document.getElementById('tableBody').rows.length === 0) {
+             Swal.fire('Atención', 'Ha indicado que enviará equipos, pero la tabla está vacía.', 'warning');
+             return;
+        }
+        if (qty === 0) {
+             Swal.fire('Atención', 'Debe indicar al menos un equipo para enviar.', 'warning');
+             return;
+        }
+
         const btn = document.querySelector('.btn-submit');
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+        const originalBtnText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
         btn.disabled = true;
 
         // Recolectar datos básicos
         const formData = new FormData(e.target);
-        const basicData = {
-            cliente: formData.get('cliente'),
-            nit: formData.get('nit'),
-            responsable_medicion: formData.get('responsable_medicion'),
-            cargo: formData.get('cargo'),
-            responsable_general: formData.get('responsable_general'),
-            direccion: formData.get('direccion'),
-            telefono: formData.get('telefono'),
-            ref_marca: formData.get('ref_marca'),
-            ref_modelo: formData.get('ref_modelo'),
-            ref_serie: formData.get('ref_serie'),
-            fecha_solicitada: new Date().toISOString() // Fecha actual
-        };
+        const basicData = Object.fromEntries(formData.entries());
+        basicData.fecha_solicitada = new Date().toISOString();
+        // Limpiamos campos que no son de la tabla principal para que no estorben
+        delete basicData['modelo[]']; delete basicData['serie[]']; delete basicData['unidad[]'];
+        delete basicData['fondo[]']; delete basicData['inst[]']; delete basicData['neto[]']; delete basicData['limite[]'];
+
 
         // Recolectar Items de la tabla
         const items = [];
@@ -272,19 +383,20 @@
 
             if (response.ok) {
                 Swal.fire({
-                    title: '¡Registrado!',
-                    text: 'La información técnica y los equipos han sido registrados.',
+                    title: '¡Solicitud Recibida!',
+                    text: 'Hemos registrado la información técnica de sus equipos exitosamente.',
                     icon: 'success',
                     confirmButtonColor: '#52277c'
                 }).then(() => {
                     location.reload();
                 });
             } else {
-                throw new Error('Error en el servidor');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Error en el servidor');
             }
         } catch (error) {
-            Swal.fire('Error', 'No se pudo guardar la información.', 'error');
-            btn.innerHTML = 'Guardar y Enviar Solicitud';
+            Swal.fire('Error', 'No se pudo guardar la información: ' + error.message, 'error');
+            btn.innerHTML = originalBtnText;
             btn.disabled = false;
         }
     });
