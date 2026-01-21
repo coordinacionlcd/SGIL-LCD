@@ -29,8 +29,8 @@
         /* Badges */
         .role-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; display: inline-block; }
         .role-administracion { background-color: #e0daeb; color: #52277c; }
-        .role-tecnico { background-color: #d1fae5; color: #065f46; }
-        .role-operativo { background-color: #dbeafe; color: #1e40af; }
+        .role-operario { background-color: #d1fae5; color: #065f46; }
+        .role-comercial { background-color: #dbeafe; color: #1e40af; }
         .role-logistico { background-color: #fff7ed; color: #9a3412; }
         .role-coordinacion { background-color: #fce7f3; color: #9d174d; }
 
@@ -70,8 +70,8 @@
             <option value="">Todos los roles</option>
             <option value="administracion">Administrador</option>
             <option value="coordinacion">Coordinación</option>
-            <option value="tecnico">Técnico</option>
-            <option value="operativo">Operativo</option>
+            <option value="operario">Operario</option>
+            <option value="comercial">Comercial</option>
             <option value="logistico">Logístico</option>
         </select>
 
@@ -212,8 +212,8 @@
                     <input id="swal-email" class="swal2-input" placeholder="Email" type="email">
                     <input id="swal-pass" class="swal2-input" placeholder="Contraseña" type="password">
                     <select id="swal-role" class="swal2-input">
-                        <option value="operativo">Operativo</option>
-                        <option value="tecnico">Técnico</option>
+                        <option value="comercial">Comercial</option>
+                        <option value="operario">Técnico</option>
                         <option value="logistico">Logístico</option>
                         <option value="coordinacion">Coordinación</option>
                         <option value="administracion">Administrador</option>
@@ -307,7 +307,7 @@
                     <label>Rol</label>
                     <select id="edit-role" class="swal2-input">
                         <option value="comercial" ${user.role === 'comercial' ? 'selected' : ''}>Comercial</option>
-                        <option value="operario" ${user.role === 'tecnico' ? 'selected' : ''}>Técnico</option>
+                        <option value="operario" ${user.role === 'operario' ? 'selected' : ''}>Operario</option>
                         <option value="logistico" ${user.role === 'logistico' ? 'selected' : ''}>Logístico</option>
                         <option value="coordinacion" ${user.role === 'coordinacion' ? 'selected' : ''}>Coordinación</option>
                         <option value="administracion" ${user.role === 'administracion' ? 'selected' : ''}>Administrador</option>
