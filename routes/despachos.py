@@ -87,33 +87,42 @@ def send_notification_emails(data):
     msg_internal['From'] = f"Sievert Sistema <{sender_email}>"
     msg_internal['To'] = ", ".join(recipients_internal)
 
-    # HTML Logística (Solo Cliente, NIT y Equipos)
+    # HTML Logística (Solo Cliente, NIT y Cantidad de Equipos - Estilo Tarjeta Elegante)
     html_internal = f"""
     <html>
-    <body style="font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0;">
-        <div style="max-width: 600px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <div style="background-color: #003366; color: white; padding: 20px; text-align: center;">
-                <h2 style="margin: 0;">⚠️ Nueva Solicitud de Recolección</h2>
-                <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Acción Requerida - Equipo Logístico</p>
+    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 40px 0;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
+            
+            <div style="background-color: #003366; color: white; padding: 30px 20px; text-align: center;">
+                <h2 style="margin: 0; font-size: 24px; font-weight: 600;">⚠️ Solicitud de Recolección</h2>
+                <p style="margin: 8px 0 0 0; font-size: 14px; opacity: 0.8; letter-spacing: 0.5px;">ACCIÓN REQUERIDA - EQUIPO LOGÍSTICO</p>
             </div>
-            <div style="padding: 30px;">
-                <div style="background-color: #f8fafc; border-left: 4px solid #52277c; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
-                    <h3 style="color: #003366; margin-top: 0; margin-bottom: 15px; font-size: 16px;">📦 Datos Generales</h3>
-                    <p style="margin: 5px 0;"><strong>🏢 Cliente:</strong> {data.get('cliente')}</p>
-                    <p style="margin: 5px 0;"><strong>🆔 NIT:</strong> {data.get('nit')}</p>
+
+            <div style="padding: 40px 30px;">
+                
+                <div style="background-color: #ffffff; border: 1px solid #eef1f5; border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <h3 style="color: #003366; margin-top: 0; margin-bottom: 20px; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+                        📦 Datos Generales
+                    </h3>
+                    <div style="margin-bottom: 12px;">
+                        <span style="display: block; font-size: 12px; color: #888; text-transform: uppercase;">Cliente</span>
+                        <span style="display: block; font-size: 18px; color: #333; font-weight: 600;">{data.get('cliente')}</span>
+                    </div>
+                    <div>
+                        <span style="display: block; font-size: 12px; color: #888; text-transform: uppercase;">NIT</span>
+                        <span style="display: block; font-size: 16px; color: #555;">{data.get('nit')}</span>
+                    </div>
                 </div>
 
-                <div>
-                    <h3 style="color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 15px;">☢️ Equipos a Recoger: {len(data.get('items', []))}</h3>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                        <tr style="background-color: #eee;">
-                            <th style="padding: 8px; text-align: left;">Marca</th>
-                            <th style="padding: 8px; text-align: left;">Modelo</th>
-                            <th style="padding: 8px; text-align: left;">Serie</th>
-                        </tr>
-                        {''.join([f'<tr><td style="padding: 8px; border-bottom: 1px solid #eee;">{i.get("marca")}</td><td style="padding: 8px; border-bottom: 1px solid #eee;">{i.get("modelo")}</td><td style="padding: 8px; border-bottom: 1px solid #eee;">{i.get("serie")}</td></tr>' for i in data.get('items', [])])}
-                    </table>
+                <div style="background-color: #e8f4fd; color: #0c5460; padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #b8daff;">
+                    <span style="display: block; font-size: 14px; margin-bottom: 5px; font-weight: 600;">TOTAL EQUIPOS A RECOGER</span>
+                    <span style="display: block; font-size: 32px; font-weight: 700; color: #003366;">{len(data.get('items', []))}</span>
                 </div>
+
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #999; border-top: 1px solid #eee;">
+                Sistema de Gestión Logística - Sievert LCD
             </div>
         </div>
     </body>
@@ -138,49 +147,49 @@ def send_notification_emails(data):
             msg_client['From'] = f"Sievert LCD <{sender_email}>"
             msg_client['To'] = client_email
 
-            # NOTA SOBRE EL LOGO: 
-            # Los correos no pueden leer imágenes locales (/static/...). 
-            # He puesto un link de ejemplo. Si tienes el logo en tu web, cambia el 'src' por ese link.
-            # Si no, funcionará como un texto alternativo.
+            # Link al logo (Asegúrate que este link sea accesible públicamente)
             logo_url = "https://coordinacionlcd.pythonanywhere.com/static/img/Logo_LCD.png"
-            
+
             html_client = f"""
             <html>
-            <body style="font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0;">
-                <div style="max-width: 600px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 40px 0;">
+                <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
                     
-                    <div style="text-align: center; padding: 20px; background-color: #ffffff; border-bottom: 1px solid #eee;">
-                         <img src="{logo_url}" alt="Sievert LCD" style="max-height: 80px; width: auto;">
+                    <div style="text-align: center; padding: 30px 20px; background-color: #ffffff; border-bottom: 1px solid #f0f0f0;">
+                         <img src="{logo_url}" alt="Sievert LCD" style="max-height: 70px; width: auto; display: block; margin: 0 auto;">
                     </div>
 
-                    <div style="background-color: #52277c; color: white; padding: 25px; text-align: center;">
-                        <h1 style="margin: 0; font-size: 22px;">¡Solicitud Recibida!</h1>
-                        <p style="margin: 10px 0 0 0; opacity: 0.9;">Hemos registrado su información correctamente.</p>
+                    <div style="background: linear-gradient(135deg, #52277c 0%, #3a1b59 100%); color: white; padding: 30px 20px; text-align: center;">
+                        <h1 style="margin: 0; font-size: 24px; font-weight: 600;">¡Solicitud Recibida!</h1>
+                        <p style="margin: 10px 0 0 0; font-size: 15px; opacity: 0.9; font-weight: 300;">Hemos registrado su información correctamente.</p>
                     </div>
 
-                    <div style="padding: 30px;">
-                        <p style="color: #333; font-size: 16px;">Hola <strong>{data.get('responsable_medicion')}</strong>,</p>
-                        <p style="color: #555; line-height: 1.5;">
+                    <div style="padding: 40px 30px;">
+                        <p style="color: #333; font-size: 16px; margin-top: 0;">Hola <strong>{data.get('responsable_medicion')}</strong>,</p>
+                        <p style="color: #555; line-height: 1.6; font-size: 15px;">
                             Confirmamos que hemos recibido la información técnica y de contaminación para <strong>{len(data.get('items', []))} equipos</strong>.
                             Nuestro equipo logístico ha sido notificado y procederá con la programación de la recolección.
                         </p>
                         
-                        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 6px; margin: 20px 0;">
-                            <strong style="color: #166534; display: block; margin-bottom: 5px;">📋 Resumen de Equipos Registrados:</strong>
-                            <ul style="margin: 0; padding-left: 20px; color: #14532d;">
+                        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 10px; margin: 25px 0;">
+                            <strong style="color: #166534; display: block; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">📋 Resumen de Equipos Registrados:</strong>
+                            <ul style="margin: 0; padding-left: 20px; color: #14532d; font-size: 14px; line-height: 1.6;">
                                 {''.join([f'<li>{i.get("marca")} {i.get("modelo")} (SN: {i.get("serie")})</li>' for i in data.get('items', [])])}
                             </ul>
                         </div>
 
-                        <p style="color: #666; font-size: 13px; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-                            Si tienes alguna duda, contacta a Coordinación:<br>
-                            <strong style="color: #52277c; font-size: 14px;">Diana Ortegón Pineda</strong><br>
-                            <span style="color: #52277c;">(+57) 317 638 8661</span>
-                        </p>
+                        <div style="text-align: center; margin-top: 35px; border-top: 1px solid #f0f0f0; padding-top: 25px;">
+                            <p style="color: #888; font-size: 13px; margin-bottom: 10px;">¿Tienes alguna duda?</p>
+                            <p style="margin: 0; color: #52277c; font-size: 15px;">
+                                Contacta a Coordinación:<br>
+                                <strong style="font-size: 16px; display: block; margin-top: 5px;">Diana Ortegón Pineda</strong>
+                                <span style="font-weight: 600;">(+57) 317 638 8661</span>
+                            </p>
+                        </div>
                     </div>
                     
-                    <div style="background-color: #eee; padding: 15px; text-align: center; font-size: 11px; color: #888;">
-                        Sievert LCD - Laboratorio de Calibración Dosimétrica<br>
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 11px; color: #aaa; border-top: 1px solid #eee;">
+                        &copy; Sievert LCD - Laboratorio de Calibración Dosimétrica<br>
                         Este es un mensaje automático, por favor no responder.
                     </div>
                 </div>
