@@ -306,7 +306,7 @@
                     <input id="edit-name" class="swal2-input" value="${user.full_name || ''}">
                     <label>Rol</label>
                     <select id="edit-role" class="swal2-input">
-                        <option value="comercial" ${user.role === 'operativo' ? 'selected' : ''}>Operativo</option>
+                        <option value="comercial" ${user.role === 'comercial' ? 'selected' : ''}>Comercial</option>
                         <option value="operario" ${user.role === 'tecnico' ? 'selected' : ''}>Técnico</option>
                         <option value="logistico" ${user.role === 'logistico' ? 'selected' : ''}>Logístico</option>
                         <option value="coordinacion" ${user.role === 'coordinacion' ? 'selected' : ''}>Coordinación</option>
