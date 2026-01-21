@@ -206,15 +206,28 @@ def api_user_records(user_id): return jsonify([]), 200
 @login_required
 @role_required(['administracion', 'coordinacion'])
 def api_create_user():
-    d = request.get_json()
+    data = request.get_json()
     try:
-        attrs = {
-            "email": d.get('email'), "password": d.get('password'), "email_confirm": True,
-            "user_metadata": { "full_name": d.get('full_name'), "role": d.get('role') }
+        # Validación básica de contraseña antes de enviar a Supabase
+        password = data.get('password')
+        if len(password) < 6:
+            return jsonify({"error": "La contraseña debe tener al menos 6 caracteres."}), 400
+
+        attributes = {
+            "email": data.get('email'),
+            "password": password,
+            "email_confirm": True,
+            "user_metadata": {
+                "full_name": data.get('full_name'),
+                "role": data.get('role') # Aquí pasamos 'comercial', 'operario', etc.
+            }
         }
-        u = supabase_admin.auth.admin.create_user(attrs)
-        return jsonify({"message": "Creado", "user": str(u)}), 200
-    except Exception as e: return jsonify({"error": "Error creando usuario (¿Email repetido?)"}), 400
+        user = supabase_admin.auth.admin.create_user(attributes)
+        return jsonify({"message": "Usuario creado", "user": str(user)}), 200
+    except Exception as e:
+        # CORRECCIÓN: Devolvemos el error real (str(e)) para saber qué pasa
+        print(f"Error creando usuario: {e}") 
+        return jsonify({"error": str(e)}), 400
 
 @app.route('/api/admin/update-user', methods=['POST'])
 @login_required
