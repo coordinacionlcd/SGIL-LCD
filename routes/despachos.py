@@ -19,6 +19,7 @@ def api_public_save():
             # Datos Cliente
             "cliente": data.get('cliente'),
             "nit": data.get('nit'),
+            "email": data.get('email'),
             "responsable_medicion": data.get('responsable_medicion'),
             "cargo": data.get('cargo'),
             "responsable_general": data.get('responsable_general'),
