@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Despacho | Sievert LCD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header img { max-width: 150px; margin-bottom: 10px; }
+        .header h2 { color: #52277c; margin: 0; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: 500; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+        .btn-submit { width: 100%; padding: 15px; background: #52277c; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-submit:hover { background: #3a1b59; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <img src="{{ url_for('static', filename='img/Logo_LCD.png') }}" alt="Sievert LCD">
+        <h2>Solicitud de Servicio</h2>
+        <p>Diligencia los datos para programar tu despacho</p>
+    </div>
+
+    <form id="publicForm">
+        <div class="form-group">
+            <label>Nombre del Cliente / Empresa</label>
+            <input type="text" name="cliente" class="form-control" required placeholder="Ej: Clínica Las Américas">
+        </div>
+        
+        <div class="form-group">
+            <label>Equipo(s) a Recoger/Enviar</label>
+            <textarea name="equipo" class="form-control" rows="2" required placeholder="Ej: Dosímetro RaySafe X2..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Fecha Requerida</label>
+            <input type="date" name="fecha_solicitada" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>Dirección de Recolección/Entrega</label>
+            <input type="text" name="direccion" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>Persona de Contacto</label>
+            <input type="text" name="contacto" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>Teléfono / Celular</label>
+            <input type="tel" name="telefono" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Enviar Solicitud</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('publicForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.querySelector('.btn-submit');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+        btn.disabled = true;
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/api/public/guardar-despacho', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    title: '¡Recibido!',
+                    text: 'Tu solicitud ha sido ingresada a nuestro sistema correctamente.',
+                    icon: 'success',
+                    confirmButtonColor: '#52277c'
+                }).then(() => {
+                    location.reload(); // Recargar para limpiar
+                });
+            } else {
+                throw new Error('Error en el servidor');
+            }
+        } catch (error) {
+            Swal.fire('Error', 'No pudimos procesar la solicitud. Intenta nuevamente.', 'error');
+            btn.innerHTML = 'Enviar Solicitud';
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
