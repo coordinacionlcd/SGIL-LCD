@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
 {% block title %}Bandeja de Despachos{% endblock %}
-{% block page_title %}Solicitudes de Despacho{% endblock %}
+{% block page_title %}Solicitudes Técnicas de Entrada{% endblock %}
 
 {% block content %}
 <div class="stats-bar" style="display: flex; gap: 1rem; margin-bottom: 20px;">
-    <div class="card" style="padding: 15px; flex: 1; text-align: center; border-left: 4px solid orange;">
+    <div class="card" style="padding: 15px; flex: 1; text-align: center; border-left: 4px solid orange; background: white;">
         <h3 style="margin: 0; color: orange;">Pendientes</h3>
         <span style="font-size: 1.5rem; font-weight: bold;">
             {{ solicitudes | selectattr("estado", "equalto", "pendiente") | list | length }}
         </span>
     </div>
-    <div class="card" style="padding: 15px; flex: 1; text-align: center; border-left: 4px solid var(--primary);">
+    <div class="card" style="padding: 15px; flex: 1; text-align: center; border-left: 4px solid var(--primary); background: white;">
         <h3 style="margin: 0; color: var(--primary);">Total</h3>
         <span style="font-size: 1.5rem; font-weight: bold;">{{ solicitudes | length }}</span>
     </div>
@@ -19,7 +19,7 @@
 
 <div class="table-card" style="background: white; padding: 20px; border-radius: 8px;">
     <div style="margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-        <span><i class="fa-solid fa-link"></i> Link para clientes: 
+        <span><i class="fa-solid fa-link"></i> Link Técnico: 
             <a href="{{ url_for('despachos.public_form', _external=True) }}" target="_blank" style="color: var(--primary); font-weight: 600;">
                 {{ url_for('despachos.public_form', _external=True) }}
             </a>
@@ -33,46 +33,98 @@
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr style="background: #f8f9fa; text-align: left;">
-                    <th style="padding: 10px;">Fecha Solicitud</th>
-                    <th style="padding: 10px;">Cliente</th>
-                    <th style="padding: 10px;">Equipo</th>
-                    <th style="padding: 10px;">Contacto</th>
-                    <th style="padding: 10px;">Estado</th>
+                    <th style="padding: 10px;">Fecha</th>
+                    <th style="padding: 10px;">Cliente / NIT</th>
+                    <th style="padding: 10px;">Responsable</th>
+                    <th style="padding: 10px;">Equipos</th>
+                    <th style="padding: 10px;">Ref. Instrumento</th>
                     <th style="padding: 10px;">Acción</th>
                 </tr>
             </thead>
             <tbody>
                 {% for s in solicitudes %}
                 <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px;">{{ s.created_at[:10] }}</td>
-                    <td style="padding: 10px; font-weight: 500;">{{ s.cliente }}</td>
-                    <td style="padding: 10px;">{{ s.equipo }}</td>
+                    <td style="padding: 10px; font-size: 0.85rem;">{{ s.created_at[:10] }}</td>
                     <td style="padding: 10px;">
-                        <div>{{ s.contacto }}</div>
-                        <div style="font-size: 0.8rem; color: #888;">{{ s.telefono }}</div>
+                        <div style="font-weight: 600;">{{ s.cliente }}</div>
+                        <div style="font-size: 0.8rem; color: #888;">NIT: {{ s.nit }}</div>
                     </td>
                     <td style="padding: 10px;">
-                        {% if s.estado == 'pendiente' %}
-                            <span style="background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Pendiente</span>
-                        {% else %}
-                            <span style="background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">{{ s.estado }}</span>
-                        {% endif %}
+                        <div>{{ s.responsable_medicion }}</div>
+                        <div style="font-size: 0.8rem; color: #888;">{{ s.cargo }}</div>
+                    </td>
+                    <td style="padding: 10px; text-align: center;">
+                        <span style="background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-weight: bold;">
+                            {{ s.items | length }}
+                        </span>
+                    </td>
+                    <td style="padding: 10px; font-size: 0.85rem;">
+                        {{ s.ref_modelo }} ({{ s.ref_serie }})
                     </td>
                     <td style="padding: 10px;">
-                        <button class="btn-primary" style="padding: 5px 10px; font-size: 0.8rem;">
-                            <i class="fa-solid fa-eye"></i> Ver
+                        <button class="btn-primary" onclick='showItems({{ s.items | tojson }})' style="padding: 5px 10px; font-size: 0.8rem;">
+                            <i class="fa-solid fa-list-check"></i> Ver Equipos
                         </button>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 20px; color: #999;">
-                        No hay solicitudes pendientes. ¡Envía el link a tus clientes!
-                    </td>
+                    <td colspan="6" style="text-align: center; padding: 20px; color: #999;">Sin registros recientes.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    function showItems(items) {
+        if(!items || items.length === 0) {
+            Swal.fire('Info', 'No hay equipos registrados en esta solicitud.', 'info');
+            return;
+        }
+
+        let html = `
+            <table style="width:100%; text-align: left; font-size: 0.9rem; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f0f0f0;">
+                        <th style="padding:5px;">Modelo</th>
+                        <th style="padding:5px;">Serie</th>
+                        <th style="padding:5px;">Neto</th>
+                        <th style="padding:5px;">Límite</th>
+                        <th style="padding:5px;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        items.forEach(item => {
+            // Lógica simple para ver si pasó el límite (asumiendo que son números)
+            const neto = parseFloat(item.neto) || 0;
+            const limite = parseFloat(item.limite) || 0;
+            const alertStyle = (neto > limite && limite > 0) ? 'color: red; font-weight: bold;' : 'color: green;';
+            const icon = (neto > limite && limite > 0) ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-check"></i>';
+
+            html += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding:5px;">${item.modelo}</td>
+                    <td style="padding:5px;">${item.serie}</td>
+                    <td style="padding:5px;">${item.neto} ${item.unidad}</td>
+                    <td style="padding:5px;">${item.limite}</td>
+                    <td style="padding:5px; ${alertStyle}">${icon}</td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table>`;
+
+        Swal.fire({
+            title: 'Equipos Recibidos',
+            html: html,
+            width: '800px',
+            confirmButtonText: 'Cerrar',
+            confirmButtonColor: '#52277c'
+        });
+    }
+</script>
 {% endblock %}
