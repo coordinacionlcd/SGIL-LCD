@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, Blueprint
 import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -7,25 +7,38 @@ from supabase import create_client, Client
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY', 'super_secret_key_default')
 
 # Credenciales Supabase
 url: str = os.getenv('SUPABASE_URL')
-key: str = os.getenv('SUPABASE_KEY')
-service_key: str = os.getenv('SUPABASE_SERVICE_KEY')
+key: str = os.getenv('SUPABASE_KEY') # Esta es la ANON KEY (Pública)
+service_key: str = os.getenv('SUPABASE_SERVICE_KEY') # Esta es la SERVICE ROLE (Secreta)
 
 # Clientes Supabase
+# Cliente normal (para lecturas públicas si las hubiera)
 supabase: Client = create_client(url, key)
+# Cliente ADMIN (para gestionar usuarios, perfiles y saltarse reglas de seguridad)
 supabase_admin: Client = create_client(url, service_key)
+
+# --- HELPER PARA RENDERIZAR (IMPORTANTE) ---
+def render_page(template_name, **kwargs):
+    """
+    Renderiza la plantilla inyectando SIEMPRE las llaves de Supabase
+    para que base.html y los scripts de JS funcionen.
+    """
+    return render_template(template_name, 
+                         supabase_url=os.getenv('SUPABASE_URL'), 
+                         supabase_key=os.getenv('SUPABASE_KEY'),
+                         **kwargs)
 
 # --- DECORADORES Y AYUDAS ---
 
 def get_current_profile():
-    """Obtiene el perfil del usuario actual."""
+    """Obtiene el perfil del usuario actual desde la DB."""
     if 'user_id' not in session:
         return None
     try:
-        # CAMBIO AQUÍ: Usamos supabase_admin en vez de supabase
+        # Usamos admin para asegurar lectura sin bloqueos RLS
         response = supabase_admin.table('profiles').select("*").eq('id', session['user_id']).execute()
         if response.data:
             return response.data[0]
@@ -51,13 +64,13 @@ def role_required(allowed_roles):
         def decorated_function(*args, **kwargs):
             profile = get_current_profile()
             if not profile or profile.get('role') not in allowed_roles:
-                return jsonify({"error": "Acceso denegado. Rol no autorizado."}), 403
+                return render_page('base.html', error="Acceso denegado") # O redirigir
             return f(*args, **kwargs)
         return decorated_function
     return decorator
 
 # ==========================================
-# RUTAS DE VISTAS (PÁGINAS HTML)
+# RUTAS PRINCIPALES
 # ==========================================
 
 @app.route('/')
@@ -68,36 +81,63 @@ def index():
 def login():
     if 'user_id' in session:
         return redirect(url_for('home'))
-    
-    # CORRECCIÓN: Usamos 'SUPABASE_KEY' que es como la tienes en tu .env
-    return render_template('login.html', 
-                         supabase_url=os.getenv('SUPABASE_URL'), 
-                         supabase_key=os.getenv('SUPABASE_KEY'))
+    return render_page('login.html')
 
 @app.route('/home')
 @login_required
 def home():
-    return render_template('dashboard.html', profile=get_current_profile())
+    return render_page('dashboard.html', profile=get_current_profile())
 
 @app.route('/perfil')
 @login_required
 def perfil():
-    return render_template('perfil.html')
+    return render_page('perfil.html')
 
 @app.route('/gestion-usuarios')
 @login_required
 def gestion_usuarios():
-    # Solo roles administrativos deberían entrar aquí
-    return render_template('gestion_usuarios.html')
+    return render_page('gestion_usuarios.html')
 
 @app.route('/despacho')
 @login_required
 def despacho():
-    """Módulo funcional: Formulario de Despacho."""
-    return render_template('despacho.html')
+    return render_page('despacho.html')
+
+@app.route('/force-logout')
+def force_logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 # ==========================================
-# APIS (ENDPOINTS PARA JAVASCRIPT)
+# PLACEHOLDERS (PARA EVITAR ERRORES EN EL SIDEBAR)
+# ==========================================
+# Como copiaste el sidebar de otro proyecto, tiene enlaces a rutas que aquí no existen.
+# Esto crea rutas vacías para que el código no falle al cargar.
+
+rutas_faltantes = [
+    'dosis_altas', 'relecturas', 'solicitudes', 'flujo_dosimetrico',
+    'humedad_temperatura', 'indicadores_operativos', 'certificados_lcd',
+    'indicadores_tecnicos', 'gestion_documental', 'indicadores',
+    'indicadores_logisticos', 'actividad' # Agregado por si acaso
+]
+
+for ruta in rutas_faltantes:
+    # Creamos una función dinámica para cada ruta faltante
+    app.add_url_rule(f'/{ruta.replace("_", "-")}', ruta, 
+                     lambda: render_page('base.html'), methods=['GET'])
+
+# Parche especial para "dosimetria_automata" que es un Blueprint en el otro proyecto
+bp_automata = Blueprint('dosimetria_automata', __name__)
+@bp_automata.route('/')
+def index(): return render_page('base.html')
+@bp_automata.route('/niveles')
+def gestionar_niveles(): return render_page('base.html')
+
+app.register_blueprint(bp_automata, url_prefix='/automata')
+
+
+# ==========================================
+# APIS (BACKEND JSON)
 # ==========================================
 
 # --- 1. SESIÓN Y AUTH ---
@@ -116,7 +156,6 @@ def api_set_session():
             session['user_id'] = user_id
 
             # 2. BUSCAR PERFIL (Nombre y Rol) PARA LA SESIÓN
-            # Usamos admin para asegurar que podamos leer los datos
             try:
                 profile_resp = supabase_admin.table('profiles').select('*').eq('id', user_id).execute()
                 if profile_resp.data:
@@ -140,7 +179,7 @@ def api_set_session():
 
 @app.route('/api/session', methods=['GET'])
 def api_session():
-    """Verifica sesión activa y devuelve perfil."""
+    """Devuelve el perfil al Frontend (JS)."""
     profile = get_current_profile()
     if profile:
         return jsonify({"profile": profile}), 200
@@ -167,6 +206,10 @@ def api_profile_update():
         supabase.table('profiles').update({
             "full_name": data.get('full_name')
         }).eq('id', session['user_id']).execute()
+        
+        # Actualizamos también la sesión
+        session['name'] = data.get('full_name')
+        
         return jsonify({"message": "Perfil actualizado"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -177,7 +220,7 @@ def api_change_password():
     data = request.get_json()
     new_password = data.get('new_password')
     try:
-        # Actualiza contraseña usando el cliente admin para evitar restricciones
+        # Actualiza contraseña usando el cliente admin
         supabase_admin.auth.admin.update_user_by_id(session['user_id'], {"password": new_password})
         return jsonify({"message": "Contraseña actualizada exitosamente"}), 200
     except Exception as e:
@@ -197,8 +240,7 @@ def api_get_users():
 @app.route('/api/user-records/<user_id>', methods=['GET'])
 @login_required
 def api_user_records(user_id):
-    """Devuelve historial de actividad (Placeholder por ahora)."""
-    # Aquí consultarías tu tabla de logs/bitácora real en el futuro.
+    # Placeholder: Devuelve lista vacía por ahora
     return jsonify([]), 200 
 
 @app.route('/api/admin/create-user', methods=['POST'])
@@ -219,7 +261,7 @@ def api_create_user():
         user = supabase_admin.auth.admin.create_user(attributes)
         return jsonify({"message": "Usuario creado", "user": str(user)}), 200
     except Exception as e:
-        return jsonify({"error": "Error al crear usuario. Posiblemente el email ya existe."}), 400
+        return jsonify({"error": "Error al crear usuario. Verifica el email."}), 400
 
 @app.route('/api/admin/update-user', methods=['POST'])
 @login_required
@@ -237,7 +279,7 @@ def api_update_user():
         # 1. Actualizar perfil en tabla
         supabase.table('profiles').update(updates).eq('id', user_id).execute()
         
-        # 2. Sincronizar metadata de Auth si cambia rol/nombre
+        # 2. Sincronizar metadata de Auth
         if 'role' in data or 'full_name' in data:
             meta = {}
             if 'role' in data: meta['role'] = data['role']
@@ -278,17 +320,11 @@ def api_reset_password():
 @app.route('/api/dashboard/summary', methods=['GET'])
 @login_required
 def api_dashboard_summary():
-    """Datos resumidos para los contadores del dashboard."""
-    # Aquí puedes conectar conteos reales de la tabla 'despachos' cuando la crees
+    # Placeholder: Conecta aquí tus conteos reales en el futuro
     return jsonify({
         "dosis_altas_pendientes": 0,
         "solicitudes_pendientes": 0
     })
-
-@app.route('/force-logout')
-def force_logout():
-    session.clear()
-    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

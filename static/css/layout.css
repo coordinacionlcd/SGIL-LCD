@@ -1,0 +1,197 @@
+/* static/css/layout.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #52277c; /* Morado Sievert */
+    --primary-dark: #3a1b59;
+    --secondary: #e43d30; /* Naranja/Rojo Sievert */
+    --background: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --sidebar-width: 260px;
+    --header-height: 70px;
+    --danger: #dc3545;
+    --success: #28a745;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background);
+    margin: 0;
+    color: var(--text-primary);
+    overflow: hidden; /* Evita scroll doble */
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: all 0.3s ease;
+}
+
+.sidebar-header {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header img {
+    max-height: 45px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.nav-link i {
+    width: 25px;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: #f0ebf5; /* Morado muy claro */
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.main-header {
+    height: var(--header-height);
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.main-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0;
+}
+
+.user-controls {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-menu-toggle {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+/* --- CONTENIDO SCROLLEABLE --- */
+.content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+/* --- DROPDOWN MENU --- */
+.user-menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 200px;
+    z-index: 1000;
+    padding: 5px 0;
+}
+
+.user-menu-dropdown.show { display: block; }
+
+.user-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    border: none;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    cursor: pointer;
+}
+
+.user-menu-item:hover { background-color: #f5f5f5; }
+.user-menu-item i { margin-right: 10px; width: 20px; text-align: center; }
+.user-menu-item.danger { color: var(--danger); }
+.dropdown-divider { height: 1px; background: var(--border-color); margin: 5px 0; }
+
+/* --- PERFIL --- */
+.profile-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    max-width: 600px;
+    margin: 0 auto;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; }
+.form-control {
+    width: 100%; padding: 10px; border: 1px solid var(--border-color);
+    border-radius: 6px; font-family: inherit; font-size: 1rem;
+}
+.btn-primary {
+    background-color: var(--primary); color: white; border: none;
+    padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { background-color: var(--primary-dark); }

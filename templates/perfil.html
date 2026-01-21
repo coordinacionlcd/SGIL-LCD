@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil{% endblock %}
+{% block page_title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="profile-card">
+    <h3 style="color: var(--primary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+        <i class="fa-solid fa-user-circle"></i> Datos Personales
+    </h3>
+    
+    <form id="profile-update-form">
+        <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" id="full_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="email" class="form-control" readonly style="background: #f9f9f9; color: #777;">
+        </div>
+        <div class="form-group">
+            <label>Rol</label>
+            <input type="text" id="role" class="form-control" readonly style="background: #f9f9f9; text-transform: capitalize;">
+        </div>
+        <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Nombre
+        </button>
+    </form>
+</div>
+
+<div class="profile-card" style="margin-top: 30px;">
+    <h3 style="color: var(--primary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+        <i class="fa-solid fa-key"></i> Cambiar Contraseña
+    </h3>
+    
+    <form id="password-change-form">
+        <div class="form-group">
+            <label>Contraseña Actual</label>
+            <input type="password" id="current_password" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Nueva Contraseña</label>
+            <input type="password" id="new_password" class="form-control" required minlength="6">
+        </div>
+        <div class="form-group">
+            <label>Confirmar Nueva Contraseña</label>
+            <input type="password" id="confirm_password" class="form-control" required minlength="6">
+        </div>
+        <button type="submit" class="btn-primary" style="background-color: var(--secondary);">
+            <i class="fa-solid fa-lock"></i> Actualizar Contraseña
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+{% endblock %}
