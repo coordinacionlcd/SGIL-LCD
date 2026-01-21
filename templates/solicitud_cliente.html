@@ -137,7 +137,7 @@
         }
         .whatsapp-link:hover { background: #dcfce7; color: #16a34a; }
 
-        /* ESTILOS PARA LA NOTA AMARILLA */
+        /* Estilo para la nueva Nota Importante de Diligenciamiento */
         .instruction-box {
             background: #fffbeb; border-left: 5px solid #f59e0b; padding: 25px; 
             margin-bottom: 30px; border-radius: 0 8px 8px 0;
@@ -145,17 +145,9 @@
         .instruction-title { color: #92400e; font-weight: 700; margin-bottom: 15px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .instruction-list { padding-left: 20px; margin: 0; color: #78350f; font-size: 0.9rem; line-height: 1.6; }
         .instruction-list li { margin-bottom: 8px; }
-        
-        /* Enlace de soporte dentro de la nota amarilla */
-        .support-link {
-            margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(146, 64, 14, 0.2);
-            color: #92400e; font-size: 0.9rem;
+        .instruction-footer {margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(146, 64, 14, 0.2); color: #92400e; display: flex; 
+            align-items: center; justify-content: space-between; gap: 15px;
         }
-        .whatsapp-btn-inline {
-            color: #16a34a; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
-            background: rgba(37, 211, 102, 0.1); padding: 2px 8px; border-radius: 4px; transition: 0.2s;
-        }
-        .whatsapp-btn-inline:hover { background: rgba(37, 211, 102, 0.2); }
 
     </style>
 </head>
@@ -201,27 +193,12 @@
                     <div class="error-msg">Solo números.</div>
                 </div>
                 
-                <div class="form-group col-8">
+                <div class="form-group col-12">
                     <label class="form-label">Correo Electrónico</label>
                     <input type="email" name="email" class="form-control" required placeholder="ejemplo@empresa.com" oninput="saveDraft()">
                     <div class="error-msg">Ingrese un correo válido.</div>
                 </div>
-                
-                <div class="form-group col-4">
-                    <label class="form-label">Teléfono / Celular</label>
-                    <input type="tel" name="telefono" class="form-control" inputmode="tel" required placeholder="Ej: 3001234567" oninput="validatePhone(this); saveDraft()">
-                </div>
 
-                <div class="form-group col-8">
-                    <label class="form-label">Dirección de Recolección</label>
-                    <input type="text" name="direccion" class="form-control" required oninput="saveDraft()">
-                </div>
-                <div class="form-group col-4">
-                    <label class="form-label">Ciudad</label>
-                    <input type="text" name="ciudad" class="form-control" required oninput="validateText(this); saveDraft()">
-                    <div class="error-msg">Solo letras.</div>
-                </div>
-                
                 <div class="form-group col-6">
                     <label class="form-label">Responsable de Medición</label>
                     <input type="text" name="responsable_medicion" class="form-control" required oninput="validateText(this); saveDraft()">
@@ -234,11 +211,10 @@
         </div>
 
         <div class="instruction-box">
-            <div class="instruction-title"><i class="fa-solid fa-list-check"></i> Indicaciones de Diligenciamiento:</div>
+            <div class="instruction-title"><i class="fa-solid fa-triangle-exclamation"></i> Indicaciones de Diligenciamiento:</div>
             <ol class="instruction-list">
                 <li>
                     <strong>Equipo de Medición:</strong> Las mediciones de contaminación deben realizarse con un instrumento diferente a los que se enviarán a calibrar.
-                    
                     <div style="margin-top: 8px; margin-bottom: 12px; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 6px; border: 1px dashed #d97706;">
                         <label style="display:block; font-weight: 600; color: #92400e; font-size: 0.9rem; margin-bottom: 5px;">
                             Indique el instrumento con el que hizo las mediciones:
@@ -252,13 +228,35 @@
                 <li><strong>Registro Individual:</strong> Realice la medición por separado para cada instrumento del despacho.</li>
                 <li><strong>Detectores Externos:</strong> Si el equipo requiere sonda/detector externo, registre únicamente la información de dicho detector.</li>
                 <li><strong>Límite:</strong> El límite de contaminación es establecido por el OPR de su institución.</li>
-            </ol>         
-        </div>        
-
+            </ol>
+            
+            <div class="instruction-footer">
+                <div>
+                    <strong>¿Necesita ayuda o tiene dudas sobre accesorios?</strong>
+                    <div style="font-size: 0.9rem; margin-top: 4px;">
+                        Para soporte contacte a: <strong>Diana Ortegón</strong>
+                    </div>
+                </div>
+                <a href="https://wa.me/573176388661" target="_blank" title="Chatear con Coordinación">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 3rem; color: #25d366; transition: transform 0.2s; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" 
+                       onmouseover="this.style.transform='scale(1.1)'" 
+                       onmouseout="this.style.transform='scale(1)'"></i>
+                </a>
+            </div>
+        </div>
+        
         <div class="section-block">
             <div class="section-header">
                 <div class="section-icon"><i class="fa-solid fa-box-open"></i></div>
                 <h3 class="section-title">Equipos a Enviar</h3>
+            </div>
+
+            <div class="alert-box">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <div>
+                    <strong>Nota Importante:</strong> Consultar al OPR el límite establecido internamente para las mediciones. 
+                    Si el equipo tiene detector externo, diligencie <strong>SÓLO</strong> la información del detector externo.
+                </div>
             </div>
 
             <div class="counter-box" style="margin-top: 20px;">
@@ -306,12 +304,11 @@
             <span style="color: #718096; font-size: 0.95rem;">
                 (+57) 317 638 8661 - 310 564 3619
             </span>
-
             <a href="https://wa.me/573176388661" target="_blank" title="Clic para chatear en WhatsApp" style="text-decoration: none;">
                 <i class="fa-brands fa-whatsapp" 
                    style="font-size: 2.8rem; color: #25d366; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); transition: transform 0.2s;"
-                   onmouseover="this.style.transform='scale(1.2)'" 
-                   onmouseout="this.style.transform='scale(0.8)'">
+                   onmouseover="this.style.transform='scale(1.15)'" 
+                   onmouseout="this.style.transform='scale(1)'">
                 </i>
             </a>
         </div>
@@ -323,10 +320,6 @@
     function validateNumber(input) {
         input.value = input.value.replace(/[^0-9]/g, ''); 
         validateField(input, input.value.length > 5); 
-    }
-    function validatePhone(input) {
-        input.value = input.value.replace(/[^0-9+ ]/g, '');
-        validateField(input, input.value.length > 6);
     }
     function validateText(input) {
         input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
@@ -523,7 +516,7 @@
                                 <div class="step-card">
                                     <i class="step-icon fa-solid fa-box-archive"></i>
                                     <span class="step-num">1. Estado de Caja</span>
-                                    <span class="step-text">Usa caja idealmente de doble pared sin daños ni etiquetas anteriores.</span>
+                                    <span class="step-text">Usa caja doble pared sin daños. Retira etiquetas antiguas.</span>
                                 </div>
                                 <div class="step-card">
                                     <i class="step-icon fa-solid fa-maximize"></i>
@@ -533,18 +526,17 @@
                                 <div class="step-card">
                                     <i class="step-icon fa-solid fa-layer-group"></i>
                                     <span class="step-num">3. Relleno Seguro</span>
-                                    <span class="step-text">Usa espuma, burbuja o papel de periódico y centra el equipo dentro de la caja.</span>
+                                    <span class="step-text">Usa espuma o burbuja (8 cm espesor) y centra el equipo.</span>
                                 </div>
-
                                 <div class="step-card">
                                     <i class="step-icon fa-solid fa-tape"></i>
                                     <span class="step-num">4. Sellado en H</span>
-                                    <span class="step-text">Cierra firmemente con cinta tanto en la parte superior como inferior (método de precinto en forma de H).</span>
+                                    <span class="step-text">Cierra firmemente con cinta en forma de H (arriba y abajo).</span>
                                 </div>
                                 <div class="step-card">
                                     <i class="step-icon fa-solid fa-clipboard-check"></i>
                                     <span class="step-num">5. Rótulo Visible</span>
-                                    <span class="step-text">Pega en la parte superior el rótulo con los datos de remitente y destinatario que te envía <strong>Daiana Monroy.<strong></span>
+                                    <span class="step-text">Pega los datos de remitente y destinatario en la parte superior.</span>
                                 </div>
                             </div>
                         </div>
