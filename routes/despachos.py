@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template
-from db import supabase_admin, supabase # Necesitamos admin para guardar lo público
+from db import supabase_admin, supabase 
 from helpers import render_page, login_required
 
 despachos_bp = Blueprint('despachos', __name__)
@@ -8,17 +8,12 @@ despachos_bp = Blueprint('despachos', __name__)
 
 @despachos_bp.route('/solicitud-servicio')
 def public_form():
-    """Ruta pública para que el cliente llene datos. NO TIENE login_required."""
-    # Usamos render_template normal porque render_page inyecta cosas que el público no necesita saber
     return render_template('solicitud_cliente.html')
 
 @despachos_bp.route('/api/public/guardar-despacho', methods=['POST'])
 def api_public_save():
-    """API pública para guardar el formulario."""
     data = request.get_json()
     try:
-        # Usamos supabase_admin para saltarnos las restricciones de RLS
-        # ya que el usuario 'anon' no tiene permiso de escribir normalmente.
         supabase_admin.table('despachos').insert({
             "cliente": data.get('cliente'),
             "equipo": data.get('equipo'),
@@ -41,11 +36,11 @@ def api_public_save():
 def despacho_dashboard():
     """
     Panel interno para ver las solicitudes.
-    Aquí cargamos los datos de Supabase antes de renderizar.
     """
     try:
-        # Traer todas las solicitudes ordenadas por fecha (más nuevas primero)
-        response = supabase.table('despachos').select("*").order('created_at', desc=True).execute()
+        # CORRECCIÓN AQUÍ: Usamos supabase_admin (la llave maestra)
+        # para que pueda leer la tabla aunque tenga restricciones RLS activas.
+        response = supabase_admin.table('despachos').select("*").order('created_at', desc=True).execute()
         solicitudes = response.data
     except Exception as e:
         print(f"Error cargando despachos: {e}")
