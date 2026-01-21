@@ -34,7 +34,7 @@
         }
 
         .main-container {
-            width: 100%; max-width: 1100px; /* Un poco más ancho para la nueva columna */
+            width: 100%; max-width: 1100px;
             background: white; border-radius: 16px;
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
             overflow: hidden; border: 1px solid rgba(255,255,255,0.5);
@@ -94,7 +94,7 @@
         .table-wrapper { margin-top: 25px; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; display: none; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        table { width: 100%; border-collapse: collapse; min-width: 900px; } /* Más ancho */
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
         th { background: #f1f5f9; text-align: left; padding: 12px; font-size: 0.8rem; text-transform: uppercase; color: var(--text-light); font-weight: 600; }
         td { padding: 8px; border-bottom: 1px solid var(--border-color); background: white; vertical-align: top; }
         td .form-control { padding: 8px; font-size: 0.85rem; }
@@ -346,7 +346,8 @@
                 <table id="itemsTable">
                     <thead>
                         <tr>
-                            <th width="15%">Marca</th> <th width="15%">Modelo</th>
+                            <th width="15%">Marca</th>
+                            <th width="15%">Modelo</th>
                             <th width="15%">Serie</th>
                             <th width="10%">Unidad</th>
                             <th width="10%">Fondo</th>
@@ -498,13 +499,11 @@
         const basicData = Object.fromEntries(formData.entries());
         basicData.fecha_solicitada = new Date().toISOString();
         
-        // Limpiamos los campos array del objeto básico
         ['marca[]', 'modelo[]','serie[]','unidad[]','fondo[]','inst[]','neto[]','limite[]'].forEach(k => delete basicData[k]);
 
         const items = [];
         for (let row of document.getElementById('tableBody').rows) {
             items.push({
-                // NUEVO CAMPO: MARCA
                 marca: row.querySelector('input[name="marca[]"]').value,
                 modelo: row.querySelector('input[name="modelo[]"]').value,
                 serie: row.querySelector('input[name="serie[]"]').value,
@@ -526,18 +525,38 @@
             if (response.ok) {
                 localStorage.removeItem('sievert_draft'); 
                 Swal.fire({
-                    icon: 'success',
-                    title: '¡Solicitud Recibida!',
-                    html: `<div style="text-align:left; color:#555;">
-                             <p>Hemos registrado su información correctamente.</p>
-                             <ul style="margin-top:10px; margin-bottom:10px; font-size:0.9rem;">
-                                <li>Cliente: <strong>${basicData.cliente}</strong></li>
-                                <li>Equipos: <strong>${items.length}</strong></li>
-                             </ul>
-                             <p style="color:#52277c; font-weight:600;">El equipo de Sievert LCD procederá con la recepción.</p>
-                           </div>`,
+                    width: '600px',
+                    html: `
+                        <div style="text-align: left; font-size: 0.9rem; color: #4a5568; max-height: 400px; overflow-y: auto;">
+                            <p style="margin-bottom: 10px; font-size: 1.1rem; color: #52277c; font-weight: 600; text-align: center;">
+                                <i class="fa-solid fa-check-circle"></i> ¡Registro Exitoso!
+                            </p>
+                            <p style="text-align: center;">Hemos recibido los datos de <strong>${items.length}</strong> equipos.</p>
+                            
+                            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; border-left: 5px solid #52277c; margin-top: 15px;">
+                                <h4 style="color: #52277c; margin-top: 0; margin-bottom: 15px; font-size: 1rem;">
+                                    <i class="fa-solid fa-box-open"></i> RECOMENDACIONES DE EMPAQUE
+                                </h4>
+                                <p style="margin-bottom: 10px;">Para evitar daños durante el transporte, por favor sigue estos pasos:</p>
+                                <ol style="padding-left: 20px; line-height: 1.6; margin-bottom: 0;">
+                                    <li>Usa una caja en buen estado (doble pared idealmente). Retira etiquetas viejas.</li>
+                                    <li>La caja debe ser al menos <strong>8 cm más grande</strong> que el instrumento.</li>
+                                    <li>Usa rellenos (papel, espuma, burbujas) con <strong>8 cm de espesor</strong> y centra el equipo.</li>
+                                    <li>Sella la caja con cinta en forma de H (arriba y abajo).</li>
+                                    <li>Pega el rótulo con datos de remitente y destinatario en la parte superior.</li>
+                                </ol>
+                            </div>
+                            
+                            <p style="margin-top: 20px; font-weight: 600; color: #52277c; text-align: center; font-size: 1rem;">
+                                ¡Gracias por confiar en Sievert LCD! <br> 
+                                <span style="font-size: 0.85rem; font-weight: 400; color: #666;">Ya estás un paso más cerca de calibrar tus equipos.</span>
+                            </p>
+                        </div>
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Finalizar y Cerrar',
                     confirmButtonColor: '#52277c',
-                    confirmButtonText: 'Finalizar'
+                    allowOutsideClick: false
                 }).then(() => location.reload());
             } else { throw new Error('Error en el servidor'); }
         } catch (error) {
