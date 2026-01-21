@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import os
+from dotenv import load_dotenv
 
 # Cargar variables de entorno
 load_dotenv()
