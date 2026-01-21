@@ -25,7 +25,8 @@ def get_current_profile():
     if 'user_id' not in session:
         return None
     try:
-        response = supabase.table('profiles').select("*").eq('id', session['user_id']).execute()
+        # CAMBIO AQUÍ: Usamos supabase_admin en vez de supabase
+        response = supabase_admin.table('profiles').select("*").eq('id', session['user_id']).execute()
         if response.data:
             return response.data[0]
     except Exception as e:
