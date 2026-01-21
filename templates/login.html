@@ -242,50 +242,78 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        // Toggle Password Visibility
+        // 1. INICIALIZAR SUPABASE (Cliente Público)
+        // Estas claves son PÚBLICAS (Anon Key), es seguro tenerlas aquí.
+        // La clave secreta (Service Role) está protegida en tu servidor (.env).
+        const SUPABASE_URL = 'https://sffcleemdtbbgexiqqeb.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmZmNsZWVtZHRiYmdleGlxcWViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTg2NzEsImV4cCI6MjA2NzEzNDY3MX0.-7z2Gh2xwd-npWvt4rXu8qJZmwH8LEEsW9mm9G7yFfg';
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 2. LÓGICA DEL BOTÓN DE VER/OCULTAR CONTRASEÑA
         const togglePassword = document.querySelector('#password-toggle');
-        const password = document.querySelector('#password');
+        const passwordInput = document.querySelector('#password');
 
-        togglePassword.addEventListener('click', function (e) {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-        });
+        if(togglePassword) {
+            togglePassword.addEventListener('click', function (e) {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye-slash');
+                this.classList.toggle('fa-eye');
+            });
+        }
 
-        // Lógica de Login (Conectada a tu app.py)
+        // 3. LÓGICA DE INICIO DE SESIÓN (MODERNA)
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const email = document.getElementById('email').value;
-            const passwordValue = document.getElementById('password').value;
+            const password = document.getElementById('password').value;
             const btn = document.getElementById('login-button');
             const errorMsg = document.getElementById('error-message');
 
+            // Estado de carga
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
             btn.disabled = true;
             errorMsg.style.display = 'none';
 
             try {
-                const res = await fetch('/login', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({email: email, password: passwordValue})
+                // PASO A: Autenticar directamente con Supabase
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
                 });
-                const data = await res.json();
-                
-                if(data.success) {
-                    window.location.href = data.redirect;
+
+                if (error) throw error;
+
+                // PASO B: Avisar a nuestro servidor Python para crear la sesión segura
+                const response = await fetch('/api/set-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ access_token: data.session.access_token })
+                });
+
+                if (response.ok) {
+                    // ÉXITO: Redirigir al dashboard
+                    window.location.href = "{{ url_for('home') }}";
                 } else {
-                    errorMsg.innerText = data.message;
-                    errorMsg.style.display = 'block';
-                    btn.innerText = "INGRESAR";
-                    btn.disabled = false;
+                    throw new Error("Error sincronizando la sesión con el servidor.");
                 }
+
             } catch (err) {
-                console.error(err);
-                errorMsg.innerText = "Error de conexión con el servidor.";
+                console.error("Error de login:", err);
+                errorMsg.innerText = "Credenciales incorrectas o error de conexión.";
                 errorMsg.style.display = 'block';
-                btn.innerText = "INGRESAR";
+                
+                // Efecto visual de error (vibración)
+                btn.classList.add('shake');
+                setTimeout(() => btn.classList.remove('shake'), 500);
+                
+                btn.innerHTML = 'INGRESAR';
                 btn.disabled = false;
             }
         });
