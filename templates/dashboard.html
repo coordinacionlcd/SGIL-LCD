@@ -4,7 +4,6 @@
 
 {% block head_styles %}
 <style>
-    /* Estilos específicos del Dashboard */
     .dashboard-header { text-align: center; margin-bottom: 2rem; border-bottom: 1px solid #e0e0e0; padding-bottom: 1rem; }
     .dashboard-header h2 { color: var(--primary); font-size: 1.8rem; margin: 0; }
     .dashboard-header p { color: #888; margin-top: 5px; }
@@ -33,14 +32,13 @@
     
     .module-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(82, 39, 124, 0.15); /* Sombra morada suave */
+        box-shadow: 0 10px 20px rgba(82, 39, 124, 0.15);
         border-color: var(--primary);
     }
     
     .module-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; }
     .module-title { font-weight: 600; font-size: 1.1rem; }
     
-    /* Loader */
     #dashboard-loader { text-align: center; padding: 40px; font-size: 1.2rem; color: #666; }
 </style>
 {% endblock %}
@@ -57,12 +55,12 @@
     </div>
 
     <div class="module-grid">
-        <a href="{{ url_for('despacho') }}" class="module-card" id="module-despacho">
+        <a href="{{ url_for('despachos.despacho_form') }}" class="module-card" id="module-despacho">
             <i class="module-icon fa-solid fa-truck-fast"></i>
             <span class="module-title">Despachos</span>
         </a>
 
-        <a href="{{ url_for('gestion_usuarios') }}" class="module-card" id="module-gestion_usuarios">
+        <a href="{{ url_for('admin.gestion_usuarios') }}" class="module-card" id="module-gestion_usuarios">
             <i class="module-icon fa-solid fa-users-gear"></i>
             <span class="module-title">Gestión Usuarios</span>
         </a>
@@ -77,7 +75,7 @@
             <span class="module-title">Clientes</span>
         </a>
         
-        <a href="{{ url_for('perfil') }}" class="module-card" id="module-perfil">
+        <a href="{{ url_for('auth.perfil') }}" class="module-card" id="module-perfil">
             <i class="module-icon fa-solid fa-id-card"></i>
             <span class="module-title">Mi Perfil</span>
         </a>

@@ -16,19 +16,19 @@
             </div>
             
             <nav class="sidebar-nav">
-                <a href="{{ url_for('home') }}" class="nav-link" data-module="dashboard">
+                <a href="{{ url_for('auth.home') }}" class="nav-link" data-module="dashboard">
                     <i class="fa-solid fa-house"></i> Dashboard
                 </a>
                 
-                <a href="{{ url_for('despacho') }}" class="nav-link" data-module="despacho">
+                <a href="{{ url_for('despachos.despacho_form') }}" class="nav-link" data-module="despacho">
                     <i class="fa-solid fa-truck-fast"></i> Despachos
                 </a>
 
-                <a href="{{ url_for('gestion_usuarios') }}" class="nav-link" data-module="gestion_usuarios">
+                <a href="{{ url_for('admin.gestion_usuarios') }}" class="nav-link" data-module="gestion_usuarios">
                     <i class="fa-solid fa-users-gear"></i> Gestión Usuarios
                 </a>
                 
-                <a href="#" class="nav-link" data-module="calibracion">
+                <a href="{{ url_for('calibracion') }}" class="nav-link" data-module="calibracion">
                     <i class="fa-solid fa-radiation"></i> Calibración
                 </a>
             </nav>
@@ -53,11 +53,11 @@
                     </button>
                     
                     <div id="user-menu-dropdown" class="user-menu-dropdown">
-                        <a href="{{ url_for('perfil') }}" class="user-menu-item">
+                        <a href="{{ url_for('auth.perfil') }}" class="user-menu-item">
                             <i class="fa-solid fa-user-pen"></i> Mi Perfil
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="{{ url_for('force_logout') }}" class="user-menu-item danger">
+                        <a href="{{ url_for('auth.force_logout') }}" class="user-menu-item danger">
                             <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
                         </a>
                     </div>
@@ -78,7 +78,6 @@
         const SUPABASE_KEY = "{{ supabase_key }}";
         window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Lógica del menú desplegable de usuario
         const menuBtn = document.getElementById('user-menu-button');
         const dropdown = document.getElementById('user-menu-dropdown');
         

@@ -70,9 +70,8 @@
             confirmButtonColor: '#52277c'
         }).then((result) => {
             if (result.isConfirmed) {
-                // CORRECCIÓN IMPORTANTE AQUÍ:
-                // Antes decías url_for('dashboard'), pero tu función en Python se llama 'home'
-                window.location.href = "{{ url_for('home') }}";
+                // CORRECCIÓN: Redirigir a 'auth.home'
+                window.location.href = "{{ url_for('auth.home') }}";
             }
         });
     });
