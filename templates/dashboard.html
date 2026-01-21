@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="dashboard-grid">
-    {% if session['role'] in ['administrador', 'operario', 'comercial'] %}
+    {% if session.get('role') in ['administracion', 'operario', 'comercial'] %}
     <a href="{{ url_for('despacho') }}" class="card-module">
         <i class="fa-solid fa-truck-fast"></i>
         <h3>Formulario Despacho</h3>
@@ -29,5 +29,13 @@
         <h3>Clientes</h3>
         <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">Base de datos CRM</p>
     </a>
+    
+    {% if session.get('role') == 'administracion' %}
+    <a href="{{ url_for('gestion_usuarios') }}" class="card-module">
+        <i class="fa-solid fa-users"></i>
+        <h3>Usuarios</h3>
+        <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">Gestión de accesos</p>
+    </a>
+    {% endif %}
 </div>
 {% endblock %}
