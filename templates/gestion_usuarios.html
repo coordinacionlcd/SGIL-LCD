@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block page_title %}
+    <i class="fa-solid fa-users-gear"></i> Administración de Usuarios
+{% endblock %}
+
+{% block head_styles %}
+    <style>
+        /* Estilos específicos para la tabla y controles */
+        .controls-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .controls-bar input, .controls-bar select { flex-grow: 1; padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-family: inherit; }
+        
+        .stats-bar { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .stat-item { background: white; border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; flex-grow: 1; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .stat-item .value { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .stat-item .label { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Tabla Estilizada */
+        .table-card { background: white; border-radius: 8px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { background-color: #f8f9fa; font-weight: 600; color: #555; text-transform: uppercase; font-size: 0.75rem; padding: 1rem; text-align: left; border-bottom: 2px solid var(--border-color); }
+        td { padding: 1rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; font-size: 0.9rem; color: #333; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #fcfcfc; }
+
+        /* Badges */
+        .role-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; display: inline-block; }
+        .role-administracion { background-color: #e0daeb; color: #52277c; }
+        .role-tecnico { background-color: #d1fae5; color: #065f46; }
+        .role-operativo { background-color: #dbeafe; color: #1e40af; }
+        .role-logistico { background-color: #fff7ed; color: #9a3412; }
+        .role-coordinacion { background-color: #fce7f3; color: #9d174d; }
+
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.8rem; font-weight: 500; }
+        .status-active { color: var(--success); }
+        .status-inactive { color: #aaa; }
+
+        /* Botones de Acción */
+        .action-btn { background: none; border: none; cursor: pointer; color: #888; padding: 6px; border-radius: 4px; transition: 0.2s; font-size: 1rem; }
+        .action-btn:hover { background-color: #f0f0f0; color: var(--primary); }
+        .action-btn.delete:hover { color: var(--danger); background-color: #fff5f5; }
+
+        /* Botón Crear (Estilo Sievert) */
+        #create-user-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px;
+        }
+        #create-user-btn:hover { box-shadow: 0 4px 12px rgba(82, 39, 124, 0.3); }
+        .hidden { display: none !important; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="stats-bar" id="stats-bar">
+        <div class="stat-item"><div class="value" id="stat-total">-</div><div class="label">Total Usuarios</div></div>
+        <div class="stat-item"><div class="value" id="stat-active">-</div><div class="label">Activos</div></div>
+        <div class="stat-item"><div class="value" id="stat-admin">-</div><div class="label">Administradores</div></div>
+    </div>
+    
+    <div class="controls-bar">
+        <div style="flex-grow: 2; position: relative;">
+            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+            <input type="text" id="search-input" placeholder="Buscar por nombre, email..." style="padding-left: 35px; width: 100%;">
+        </div>
+        
+        <select id="role-filter" style="flex-grow: 1; max-width: 200px;">
+            <option value="">Todos los roles</option>
+            <option value="administracion">Administrador</option>
+            <option value="coordinacion">Coordinación</option>
+            <option value="tecnico">Técnico</option>
+            <option value="operativo">Operativo</option>
+            <option value="logistico">Logístico</option>
+        </select>
+
+        <button id="create-user-btn" class="hidden">
+            <i class="fa-solid fa-plus"></i> Crear Usuario
+        </button>
+    </div>
+
+    <div class="table-card">
+        <div class="table-container" id="user-table-container">
+            <div style="padding: 2rem; text-align: center; color: #666;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Cargando usuarios...
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/relativeTime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/es.js"></script>
+    
+    <script>
+        dayjs.extend(window.dayjs_plugin_relativeTime);
+        dayjs.locale('es');
+
+        let allUsers = [];
+        let myRole = '';
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('sessionReady', (event) => {
+            const { profile } = event.detail;
+            if (!profile) return;
+
+            myRole = profile.role;
+
+            // RESTRICCIÓN VISUAL: Solo Administracion ve el botón crear
+            if (myRole === 'administracion') {
+                document.getElementById('create-user-btn').classList.remove('hidden');
+            }
+
+            loadUsers();
+        });
+
+        // --- CARGAR DATOS ---
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/users');
+                if (!response.ok) throw new Error('Error al cargar datos');
+                
+                allUsers = await response.json();
+                renderFilteredUsers();
+            } catch (error) {
+                document.getElementById('user-table-container').innerHTML = 
+                    `<p style="color: red; text-align: center; padding: 20px;">Error: ${error.message}</p>`;
+            }
+        }
+
+        // --- RENDERIZADO Y FILTROS ---
+        function renderFilteredUsers() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const roleFilter = document.getElementById('role-filter').value;
+
+            const filtered = allUsers.filter(user => {
+                const matchSearch = (user.full_name || '').toLowerCase().includes(search) || 
+                                    (user.email || '').toLowerCase().includes(search);
+                const matchRole = !roleFilter || user.role === roleFilter;
+                return matchSearch && matchRole;
+            });
+
+            updateStats(filtered);
+            renderTable(filtered);
+        }
+
+        function updateStats(users) {
+            document.getElementById('stat-total').textContent = users.length;
+            document.getElementById('stat-active').textContent = users.filter(u => u.is_active).length;
+            document.getElementById('stat-admin').textContent = users.filter(u => u.role === 'administracion').length;
+        }
+
+        function renderTable(users) {
+            const container = document.getElementById('user-table-container');
+            if (users.length === 0) {
+                container.innerHTML = '<div style="padding: 2rem; text-align: center; color: #888;">No se encontraron usuarios.</div>';
+                return;
+            }
+
+            let html = `<table>
+                <thead><tr>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Último Ingreso</th>
+                    <th style="text-align: right;">Acciones</th>
+                </tr></thead><tbody>`;
+
+            users.forEach(u => {
+                const lastLogin = u.last_sign_in_at ? dayjs(u.last_sign_in_at).fromNow() : 'Nunca';
+                const statusIcon = u.is_active ? 
+                    `<span class="status-badge status-active"><i class="fa-solid fa-circle-check"></i> Activo</span>` : 
+                    `<span class="status-badge status-inactive"><i class="fa-solid fa-ban"></i> Inactivo</span>`;
+                
+                // Solo mostrar botón de eliminar si soy admin y no soy yo mismo
+                const deleteBtn = (myRole === 'administracion') ? 
+                    `<button class="action-btn delete" onclick="deleteUser('${u.id}')" title="Eliminar"><i class="fa-solid fa-trash"></i></button>` : '';
+                
+                // Botón editar visible para admin y coordinacion
+                const editBtn = (myRole === 'administracion' || myRole === 'coordinacion') ?
+                     `<button class="action-btn" onclick="editUser('${u.id}')" title="Editar"><i class="fa-solid fa-pen"></i></button>` : '';
+
+                html += `<tr>
+                    <td>
+                        <div style="font-weight: 500;">${u.full_name || 'Sin nombre'}</div>
+                        <div style="font-size: 0.8rem; color: #888;">${u.email}</div>
+                    </td>
+                    <td><span class="role-badge role-${u.role}">${u.role}</span></td>
+                    <td>${statusIcon}</td>
+                    <td>${lastLogin}</td>
+                    <td style="text-align: right;">
+                        <button class="action-btn" onclick="resetPass('${u.id}')" title="Cambiar Password"><i class="fa-solid fa-key"></i></button>
+                        ${editBtn}
+                        ${deleteBtn}
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // --- ACCIONES (CREAR, EDITAR, ELIMINAR) ---
+        
+        // 1. CREAR USUARIO
+        document.getElementById('create-user-btn').addEventListener('click', async () => {
+            const { value: formValues } = await Swal.fire({
+                title: 'Nuevo Usuario',
+                html: `
+                    <input id="swal-name" class="swal2-input" placeholder="Nombre Completo">
+                    <input id="swal-email" class="swal2-input" placeholder="Email" type="email">
+                    <input id="swal-pass" class="swal2-input" placeholder="Contraseña" type="password">
+                    <select id="swal-role" class="swal2-input">
+                        <option value="operativo">Operativo</option>
+                        <option value="tecnico">Técnico</option>
+                        <option value="logistico">Logístico</option>
+                        <option value="coordinacion">Coordinación</option>
+                        <option value="administracion">Administrador</option>
+                    </select>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonColor: '#52277c',
+                preConfirm: () => {
+                    return {
+                        full_name: document.getElementById('swal-name').value,
+                        email: document.getElementById('swal-email').value,
+                        password: document.getElementById('swal-pass').value,
+                        role: document.getElementById('swal-role').value
+                    }
+                }
+            });
+
+            if (formValues) {
+                Swal.showLoading();
+                const res = await fetch('/api/admin/create-user', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formValues)
+                });
+                const data = await res.json();
+                if(res.ok) {
+                    Swal.fire('Creado', 'Usuario creado correctamente', 'success');
+                    loadUsers();
+                } else {
+                    Swal.fire('Error', data.error, 'error');
+                }
+            }
+        });
+
+        // 2. CAMBIAR CONTRASEÑA (RESET)
+        window.resetPass = async (id) => {
+            const { value: pass } = await Swal.fire({
+                title: 'Nueva Contraseña',
+                input: 'password',
+                inputLabel: 'Ingresa la nueva contraseña para este usuario',
+                showCancelButton: true,
+                confirmButtonColor: '#52277c'
+            });
+
+            if (pass) {
+                const res = await fetch('/api/admin/reset-user-password', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ user_id: id, new_password: pass })
+                });
+                if(res.ok) Swal.fire('Listo', 'Contraseña actualizada', 'success');
+                else Swal.fire('Error', 'No se pudo actualizar', 'error');
+            }
+        };
+
+        // 3. ELIMINAR USUARIO
+        window.deleteUser = async (id) => {
+            const result = await Swal.fire({
+                title: '¿Estás segura?',
+                text: "Esta acción eliminará el acceso del usuario permanentemente.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Sí, eliminar'
+            });
+
+            if (result.isConfirmed) {
+                const res = await fetch('/api/admin/delete-user', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ user_id: id })
+                });
+                if(res.ok) {
+                    Swal.fire('Eliminado', 'Usuario eliminado.', 'success');
+                    loadUsers();
+                } else {
+                    Swal.fire('Error', 'No se pudo eliminar', 'error');
+                }
+            }
+        };
+
+        // 4. EDITAR USUARIO (ROL / NOMBRE)
+        window.editUser = async (id) => {
+            const user = allUsers.find(u => u.id === id);
+            const { value: formValues } = await Swal.fire({
+                title: 'Editar Usuario',
+                html: `
+                    <label>Nombre</label>
+                    <input id="edit-name" class="swal2-input" value="${user.full_name || ''}">
+                    <label>Rol</label>
+                    <select id="edit-role" class="swal2-input">
+                        <option value="operativo" ${user.role === 'operativo' ? 'selected' : ''}>Operativo</option>
+                        <option value="tecnico" ${user.role === 'tecnico' ? 'selected' : ''}>Técnico</option>
+                        <option value="logistico" ${user.role === 'logistico' ? 'selected' : ''}>Logístico</option>
+                        <option value="coordinacion" ${user.role === 'coordinacion' ? 'selected' : ''}>Coordinación</option>
+                        <option value="administracion" ${user.role === 'administracion' ? 'selected' : ''}>Administrador</option>
+                    </select>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#52277c',
+                preConfirm: () => ({
+                    full_name: document.getElementById('edit-name').value,
+                    role: document.getElementById('edit-role').value
+                })
+            });
+
+            if (formValues) {
+                const res = await fetch('/api/admin/update-user', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ user_id: id, ...formValues })
+                });
+                if(res.ok) {
+                    Swal.fire('Actualizado', 'Datos guardados', 'success');
+                    loadUsers();
+                } else {
+                    Swal.fire('Error', 'No se pudo actualizar', 'error');
+                }
+            }
+        };
+
+        // Listeners de filtros
+        document.getElementById('search-input').addEventListener('input', renderFilteredUsers);
+        document.getElementById('role-filter').addEventListener('change', renderFilteredUsers);
+
+    </script>
+{% endblock %}
