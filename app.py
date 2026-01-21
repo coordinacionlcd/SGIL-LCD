@@ -104,16 +104,38 @@ def despacho():
 
 @app.route('/api/set-session', methods=['POST'])
 def api_set_session():
-    """Crea la sesión en Flask cuando el JS confirma login en Supabase."""
+    """Crea la sesión en Flask guardando ID, Nombre y Rol."""
     data = request.get_json()
     access_token = data.get('access_token')
+    
     try:
+        # 1. Verificar token con Supabase
         user = supabase.auth.get_user(access_token)
         if user:
-            session['user_id'] = user.user.id
+            user_id = user.user.id
+            session['user_id'] = user_id
+
+            # 2. BUSCAR PERFIL (Nombre y Rol) PARA LA SESIÓN
+            # Usamos admin para asegurar que podamos leer los datos
+            try:
+                profile_resp = supabase_admin.table('profiles').select('*').eq('id', user_id).execute()
+                if profile_resp.data:
+                    profile = profile_resp.data[0]
+                    session['name'] = profile.get('full_name', 'Usuario')
+                    session['role'] = profile.get('role', 'invitado')
+                else:
+                    session['name'] = 'Usuario'
+                    session['role'] = 'invitado'
+            except Exception as e:
+                print(f"Error cargando datos de sesión: {e}")
+                session['name'] = 'Usuario'
+                session['role'] = 'invitado'
+
             return jsonify({"message": "Sesión establecida"}), 200
+            
     except Exception as e:
         return jsonify({"error": str(e)}), 401
+        
     return jsonify({"error": "Token inválido"}), 401
 
 @app.route('/api/session', methods=['GET'])
