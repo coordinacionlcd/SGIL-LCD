@@ -524,37 +524,88 @@
 
             if (response.ok) {
                 localStorage.removeItem('sievert_draft'); 
+                
                 Swal.fire({
-                    width: '600px',
+                    width: '950px', // Ventana más ancha para evitar scroll
+                    padding: '2rem',
+                    background: '#ffffff',
                     html: `
-                        <div style="text-align: left; font-size: 0.9rem; color: #4a5568; max-height: 400px; overflow-y: auto;">
-                            <p style="margin-bottom: 10px; font-size: 1.1rem; color: #52277c; font-weight: 600; text-align: center;">
-                                <i class="fa-solid fa-check-circle"></i> ¡Registro Exitoso!
-                            </p>
-                            <p style="text-align: center;">Hemos recibido los datos de <strong>${items.length}</strong> equipos.</p>
+                        <style>
+                            /* Estilos internos solo para esta alerta */
+                            .success-header { margin-bottom: 20px; }
+                            .success-title { color: #52277c; font-size: 1.8rem; font-weight: 700; margin: 0; }
+                            .success-subtitle { color: #718096; font-size: 1rem; margin-top: 5px; }
                             
-                            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; border-left: 5px solid #52277c; margin-top: 15px;">
-                                <h4 style="color: #52277c; margin-top: 0; margin-bottom: 15px; font-size: 1rem;">
-                                    <i class="fa-solid fa-box-open"></i> RECOMENDACIONES DE EMPAQUE
-                                </h4>
-                                <p style="margin-bottom: 10px;">Para evitar daños durante el transporte, por favor sigue estos pasos:</p>
-                                <ol style="padding-left: 20px; line-height: 1.6; margin-bottom: 0;">
-                                    <li>Usa una caja en buen estado (doble pared idealmente). Retira etiquetas viejas.</li>
-                                    <li>La caja debe ser al menos <strong>8 cm más grande</strong> que el instrumento.</li>
-                                    <li>Usa rellenos (papel, espuma, burbujas) con <strong>8 cm de espesor</strong> y centra el equipo.</li>
-                                    <li>Sella la caja con cinta en forma de H (arriba y abajo).</li>
-                                    <li>Pega el rótulo con datos de remitente y destinatario en la parte superior.</li>
-                                </ol>
-                            </div>
+                            .recommendation-box { background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 20px; }
+                            .rec-title { 
+                                background: #52277c; color: white; padding: 8px 20px; border-radius: 20px; 
+                                font-weight: 600; display: inline-block; margin-bottom: 20px; font-size: 0.9rem;
+                                box-shadow: 0 4px 6px rgba(82, 39, 124, 0.2);
+                            }
+
+                            /* Grid de pasos para que quepan sin scroll */
+                            .steps-grid { 
+                                display: grid; 
+                                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+                                gap: 15px; 
+                                align-items: start;
+                            }
+
+                            .step-card { 
+                                background: white; padding: 15px 10px; border-radius: 8px; 
+                                border: 1px solid #e2e8f0; text-align: center; height: 100%;
+                                transition: transform 0.2s;
+                            }
+                            .step-card:hover { transform: translateY(-3px); border-color: #52277c; }
                             
-                            <p style="margin-top: 20px; font-weight: 600; color: #52277c; text-align: center; font-size: 1rem;">
-                                ¡Gracias por confiar en Sievert LCD! <br> 
-                                <span style="font-size: 0.85rem; font-weight: 400; color: #666;">Ya estás un paso más cerca de calibrar tus equipos.</span>
-                            </p>
+                            .step-icon { color: #e43d30; font-size: 2rem; margin-bottom: 10px; display: block; }
+                            .step-num { font-weight: 700; color: #52277c; font-size: 0.9rem; display: block; margin-bottom: 5px; }
+                            .step-text { font-size: 0.8rem; color: #4a5568; line-height: 1.4; }
+                        </style>
+
+                        <div class="success-header">
+                            <h2 class="success-title"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> ¡Registro Exitoso!</h2>
+                            <p class="success-subtitle">Hemos recibido los datos de <strong>${items.length}</strong> equipos correctamente.</p>
                         </div>
+
+                        <div class="recommendation-box">
+                            <div class="rec-title"><i class="fa-solid fa-shield-heart"></i> PARA UN ENVÍO SEGURO</div>
+                            
+                            <div class="steps-grid">
+                                <div class="step-card">
+                                    <i class="step-icon fa-solid fa-box-open"></i>
+                                    <span class="step-num">1. ESTADO DE CAJA</span>
+                                    <span class="step-text">Usa caja doble pared en buen estado. Retira etiquetas viejas.</span>
+                                </div>
+                                <div class="step-card">
+                                    <i class="step-icon fa-solid fa-ruler-combined"></i>
+                                    <span class="step-num">2. TAMAÑO</span>
+                                    <span class="step-text">La caja debe ser mín. <strong>8 cm más grande</strong> que el equipo.</span>
+                                </div>
+                                <div class="step-card">
+                                    <i class="step-icon fa-solid fa-layer-group"></i>
+                                    <span class="step-num">3. RELLENO</span>
+                                    <span class="step-text">Usa espuma/burbuja (8 cm espesor) y centra el equipo.</span>
+                                </div>
+                                <div class="step-card">
+                                    <i class="step-icon fa-solid fa-tape"></i>
+                                    <span class="step-num">4. SELLADO</span>
+                                    <span class="step-text">Cierra con cinta formando una "H" arriba y abajo.</span>
+                                </div>
+                                <div class="step-card">
+                                    <i class="step-icon fa-solid fa-file-invoice"></i>
+                                    <span class="step-num">5. RÓTULO</span>
+                                    <span class="step-text">Pega datos de remitente y destinatario visiblemente.</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 25px; font-weight: 600; color: #52277c; font-size: 1.1rem;">
+                            ¡Gracias por confiar en los expertos de Sievert LCD!
+                        </p>
                     `,
                     showConfirmButton: true,
-                    confirmButtonText: 'Finalizar y Cerrar',
+                    confirmButtonText: 'Entendido, Finalizar',
                     confirmButtonColor: '#52277c',
                     allowOutsideClick: false
                 }).then(() => location.reload());
