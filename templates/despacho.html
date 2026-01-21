@@ -55,14 +55,14 @@
                     </td>
                     <td style="padding: 10px; text-align: center;">
                         <span style="background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-weight: bold;">
-                            {{ s.items | length }}
+                            {{ s['items'] | length }}
                         </span>
                     </td>
                     <td style="padding: 10px; font-size: 0.85rem;">
                         {{ s.ref_modelo }} ({{ s.ref_serie }})
                     </td>
                     <td style="padding: 10px;">
-                        <button class="btn-primary" onclick='showItems({{ s.items | tojson }})' style="padding: 5px 10px; font-size: 0.8rem;">
+                        <button class="btn-primary" onclick='showItems({{ s["items"] | tojson }})' style="padding: 5px 10px; font-size: 0.8rem;">
                             <i class="fa-solid fa-list-check"></i> Ver Equipos
                         </button>
                     </td>
@@ -99,11 +99,11 @@
         `;
 
         items.forEach(item => {
-            // Lógica simple para ver si pasó el límite (asumiendo que son números)
             const neto = parseFloat(item.neto) || 0;
             const limite = parseFloat(item.limite) || 0;
-            const alertStyle = (neto > limite && limite > 0) ? 'color: red; font-weight: bold;' : 'color: green;';
-            const icon = (neto > limite && limite > 0) ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-check"></i>';
+            // Validamos si hay límite definido para mostrar alerta
+            const alertStyle = (limite > 0 && neto > limite) ? 'color: red; font-weight: bold;' : 'color: green;';
+            const icon = (limite > 0 && neto > limite) ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-check"></i>';
 
             html += `
                 <tr style="border-bottom: 1px solid #eee;">
