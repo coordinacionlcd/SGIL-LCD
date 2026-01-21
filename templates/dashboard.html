@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Principal{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    {% if session['role'] in ['administrador', 'operario', 'comercial'] %}
+    <a href="{{ url_for('despacho') }}" class="card-module">
+        <i class="fa-solid fa-truck-fast"></i>
+        <h3>Formulario Despacho</h3>
+        <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">Gestión de envíos y logística de equipos</p>
+    </a>
+    {% endif %}
+
+    <a href="#" class="card-module">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>Recepción Equipos</h3>
+        <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">Ingreso al laboratorio</p>
+    </a>
+
+    <a href="#" class="card-module">
+        <i class="fa-solid fa-radiation"></i>
+        <h3>Calibración</h3>
+        <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">Procesos técnicos LCD</p>
+    </a>
+
+    <a href="#" class="card-module">
+        <i class="fa-solid fa-building-user"></i>
+        <h3>Clientes</h3>
+        <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">Base de datos CRM</p>
+    </a>
+</div>
+{% endblock %}

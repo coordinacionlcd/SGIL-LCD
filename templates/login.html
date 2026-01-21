@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ingreso SGIL | Sievert LCD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <img src="{{ url_for('static', filename='img/logo_lcd.png') }}" alt="Sievert Logo" class="login-logo">
+            <h2 style="color: var(--sievert-purple); margin-bottom: 10px;">Bienvenido al SGIL</h2>
+            <p style="color: #777; margin-bottom: 30px; font-size: 0.9rem;">Laboratorio de Calibración Dosimétrica</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="email" class="form-control" placeholder="usuario@sievert.com.co" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-sievert">INGRESAR</button>
+            </form>
+            <p id="errorMsg" style="color: red; margin-top: 15px; font-size: 0.85rem; display: none;"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.querySelector('button');
+            const errorMsg = document.getElementById('errorMsg');
+
+            btn.innerText = "Verificando...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, password})
+                });
+                const data = await res.json();
+                
+                if(data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    errorMsg.innerText = data.message;
+                    errorMsg.style.display = 'block';
+                    btn.innerText = "INGRESAR";
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                btn.innerText = "INGRESAR";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

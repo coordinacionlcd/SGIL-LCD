@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Despachos{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <div class="form-header">
+        <h3 style="color: var(--sievert-purple);"><i class="fa-solid fa-paper-plane"></i> Nuevo Despacho</h3>
+        <span style="color: #888; font-size: 0.9rem;">Folio: #Auto-Generado</span>
+    </div>
+
+    <form id="formDespacho">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Cliente / Institución</label>
+                <input type="text" name="cliente" class="form-control" placeholder="Ej: Clínica Las Américas" required>
+            </div>
+            <div class="form-group">
+                <label>Fecha de Salida</label>
+                <input type="date" name="fecha" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Equipo(s) a Despachar</label>
+                <input type="text" name="equipo" class="form-control" placeholder="Ej: Dosímetro RaySafe X2" required>
+            </div>
+            <div class="form-group">
+                <label>Método de Envío</label>
+                <select class="form-control">
+                    <option>Servientrega</option>
+                    <option>Deprisa</option>
+                    <option>Mensajero Propio</option>
+                    <option>Recogida en Sede</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Número de Guía / Tracking</label>
+            <input type="text" class="form-control" placeholder="Escanea o escribe el número de guía">
+        </div>
+
+        <div class="form-group">
+            <label>Observaciones Adicionales</label>
+            <textarea class="form-control" rows="3" placeholder="Ej: Entregar en recepción de biomédica..."></textarea>
+        </div>
+
+        <div style="text-align: right; margin-top: 20px;">
+            <button type="button" class="btn-sievert" style="width: auto; background: #aaa; margin-right: 10px;" onclick="history.back()">Cancelar</button>
+            <button type="submit" class="btn-sievert" style="width: auto;">Registrar Despacho</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('formDespacho').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Simulación de envío
+        Swal.fire({
+            title: '¡Despacho Registrado!',
+            text: 'La información se ha guardado en el SGIL correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#52277c'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ url_for('dashboard') }}";
+            }
+        });
+    });
+</script>
+{% endblock %}
