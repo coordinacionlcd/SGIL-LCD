@@ -296,7 +296,7 @@
                 });
 
                 if (response.ok) {
-                    window.location.href = "{{ url_for('home') }}";
+                    window.location.href = "{{ url_for('auth.home') }}";
                 } else {
                     throw new Error("Error estableciendo sesión en el servidor.");
                 }
